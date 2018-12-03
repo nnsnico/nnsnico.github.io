@@ -1,6 +1,7 @@
 module Update.Update exposing (update)
 
 import Api.HttpConnection as HttpConnection
+import Models.LoadingStatus exposing (LoadingVisibility(..))
 import Models.Model exposing (Model, model)
 import Msgs exposing (..)
 import Random
@@ -55,7 +56,7 @@ update msg model =
             )
 
         MakeGif ->
-            ( { model | loadingStatus = "visible" }
+            ( { model | loadingStatus = Visible }
             , HttpConnection.getRandomGif model.topic
             )
 

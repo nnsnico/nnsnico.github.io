@@ -1,6 +1,7 @@
 module Msgs exposing (Msg(..))
 
 import Http
+import Models.LoadingStatus exposing (LoadingVisibility(..))
 import Time
 
 

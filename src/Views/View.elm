@@ -5,6 +5,7 @@ import Css.Global as Global
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (..)
+import Models.LoadingStatus exposing (..)
 import Models.Model exposing (..)
 import Msgs exposing (..)
 import Styles exposing (..)
@@ -134,7 +135,17 @@ view model =
                         , div [ css [ displayFlex, alignItems center ] ]
                             [ button [ onClick MakeGif ] [ text "GIF生成" ]
                             , span [ css [ statusLabel ] ] [ text model.statusMessage ]
-                            , div [ class "spinner", css [ loadingVisibility model.loadingStatus ] ]
+                            , div
+                                [ class "spinner"
+                                , css
+                                    [ loadingVisibility <|
+                                        if model.loadingStatus == Visible then
+                                            "visible"
+
+                                        else
+                                            "hidden"
+                                    ]
+                                ]
                                 [ div [ class "rect1" ] []
                                 , div [ class "rect2" ] []
                                 , div [ class "rect3" ] []

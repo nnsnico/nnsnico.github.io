@@ -2,6 +2,7 @@ module Models.Model exposing (Model, model)
 
 import Api.HttpConnection as HttpConnection
 import Css exposing (..)
+import Models.LoadingStatus exposing (LoadingVisibility(..))
 import Msgs exposing (..)
 import Task
 import Time
@@ -20,24 +21,26 @@ type alias Model =
     , topic : String
     , url : String
     , statusMessage : String
-    , loadingStatus : String
+    , loadingStatus : LoadingVisibility
     }
 
 
 model : () -> ( Model, Cmd Msg )
 model _ =
-    ( Model
-        [ "hogehoge"
-        , "fugafuga"
-        , "piyopiyo"
-        ]
-        Nothing
-        1
-        Time.utc
-        (Time.millisToPosix 0)
-        "otaku"
-        "waiting.gif"
-        ""
-        "hidden"
+    ( { names =
+            [ "hogehoge"
+            , "fugafuga"
+            , "piyopiyo"
+            , "unkounko"
+            ]
+      , inputText = Nothing
+      , diceFace = 1
+      , zone = Time.utc
+      , time = Time.millisToPosix 0
+      , topic = "otaku"
+      , url = "waiting.gif"
+      , statusMessage = ""
+      , loadingStatus = Gone
+      }
     , Cmd.batch [ HttpConnection.getRandomGif "otaku", Task.perform AdjustTimeZone Time.here ]
     )
