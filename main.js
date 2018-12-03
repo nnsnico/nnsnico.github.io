@@ -6147,10 +6147,7 @@ var author$project$Api$HttpConnection$getRandomGif = function (topic) {
 			author$project$Api$HttpConnection$toGiphyUrl(topic),
 			author$project$Api$HttpConnection$gifDecoder));
 };
-var author$project$Models$Model$Model = F9(
-	function (names, inputText, diceFace, zone, time, topic, url, statusMessage, loadingStatus) {
-		return {diceFace: diceFace, inputText: inputText, loadingStatus: loadingStatus, names: names, statusMessage: statusMessage, time: time, topic: topic, url: url, zone: zone};
-	});
+var author$project$Models$LoadingStatus$Gone = {$: 'Gone'};
 var author$project$Msgs$AdjustTimeZone = function (a) {
 	return {$: 'AdjustTimeZone', a: a};
 };
@@ -6165,18 +6162,18 @@ var elm$time$Time$here = _Time_here(_Utils_Tuple0);
 var elm$time$Time$utc = A2(elm$time$Time$Zone, 0, _List_Nil);
 var author$project$Models$Model$model = function (_n0) {
 	return _Utils_Tuple2(
-		A9(
-			author$project$Models$Model$Model,
-			_List_fromArray(
-				['hogehoge', 'fugafuga', 'piyopiyo']),
-			elm$core$Maybe$Nothing,
-			1,
-			elm$time$Time$utc,
-			elm$time$Time$millisToPosix(0),
-			'otaku',
-			'waiting.gif',
-			'',
-			'hidden'),
+		{
+			diceFace: 1,
+			inputText: elm$core$Maybe$Nothing,
+			loadingStatus: author$project$Models$LoadingStatus$Gone,
+			names: _List_fromArray(
+				['hogehoge', 'fugafuga', 'piyopiyo', 'unkounko']),
+			statusMessage: '',
+			time: elm$time$Time$millisToPosix(0),
+			topic: 'otaku',
+			url: 'waiting.gif',
+			zone: elm$time$Time$utc
+		},
 		elm$core$Platform$Cmd$batch(
 			_List_fromArray(
 				[
@@ -6184,6 +6181,7 @@ var author$project$Models$Model$model = function (_n0) {
 					A2(elm$core$Task$perform, author$project$Msgs$AdjustTimeZone, elm$time$Time$here)
 				])));
 };
+var author$project$Models$LoadingStatus$Visible = {$: 'Visible'};
 var author$project$Msgs$NewFace = function (a) {
 	return {$: 'NewFace', a: a};
 };
@@ -6195,13 +6193,13 @@ var author$project$Update$UpdateGif$updateGif = F2(
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{loadingStatus: 'hidden', statusMessage: '', url: newUrl}),
+					{loadingStatus: author$project$Models$LoadingStatus$Gone, statusMessage: '', url: newUrl}),
 				elm$core$Platform$Cmd$none);
 		} else {
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{loadingStatus: 'hidden', statusMessage: 'サーバーの接続に失敗しました！'}),
+					{loadingStatus: author$project$Models$LoadingStatus$Gone, statusMessage: 'サーバーの接続に失敗しました！'}),
 				elm$core$Platform$Cmd$none);
 		}
 	});
@@ -6416,7 +6414,7 @@ var author$project$Update$Update$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{loadingStatus: 'visible'}),
+						{loadingStatus: author$project$Models$LoadingStatus$Visible}),
 					author$project$Api$HttpConnection$getRandomGif(model.topic));
 			default:
 				var result = msg.a;
@@ -9519,7 +9517,8 @@ var author$project$Views$View$view = function (model) {
 																rtfeldman$elm_css$Html$Styled$Attributes$css(
 																_List_fromArray(
 																	[
-																		author$project$Styles$loadingVisibility(model.loadingStatus)
+																		author$project$Styles$loadingVisibility(
+																		_Utils_eq(model.loadingStatus, author$project$Models$LoadingStatus$Visible) ? 'visible' : 'hidden')
 																	]))
 															]),
 														_List_fromArray(
