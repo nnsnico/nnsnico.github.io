@@ -17,6 +17,11 @@ import Update.UpdateInput exposing (..)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NavbarMsg state ->
+            ( { model | navbarState = state }
+            , Cmd.none
+            )
+
         NoOp ->
             ( model
             , Cmd.none
