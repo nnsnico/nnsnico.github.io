@@ -1,6 +1,7 @@
 module Models.Model exposing (Model, model)
 
 import Api.HttpConnection as HttpConnection
+import Bootstrap.Navbar as Navbar
 import Css exposing (..)
 import Models.LoadingStatus exposing (LoadingVisibility(..))
 import Msgs exposing (..)
@@ -13,7 +14,8 @@ import Time
 
 
 type alias Model =
-    { names : List String
+    { navbarState : Navbar.State
+    , names : List String
     , inputText : Maybe String
     , diceFace : Int
     , zone : Time.Zone
@@ -27,7 +29,12 @@ type alias Model =
 
 model : () -> ( Model, Cmd Msg )
 model _ =
-    ( { names =
+    let
+        ( navbarState, navbarCmd ) =
+            Navbar.initialState NavbarMsg
+    in
+    ( { navbarState = navbarState
+      , names =
             [ "hogehoge"
             , "fugafuga"
             , "piyopiyo"
@@ -42,5 +49,5 @@ model _ =
       , statusMessage = ""
       , loadingStatus = Gone
       }
-    , Cmd.batch [ HttpConnection.getRandomGif "otaku", Task.perform AdjustTimeZone Time.here ]
+    , Cmd.batch [ HttpConnection.getRandomGif "otaku", Task.perform AdjustTimeZone Time.here, navbarCmd ]
     )

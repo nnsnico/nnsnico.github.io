@@ -1,7 +1,7 @@
 module Main exposing (main)
 
+import Bootstrap.Navbar as Navbar
 import Browser
-import Html.Styled exposing (toUnstyled)
 import Models.Model exposing (..)
 import Msgs exposing (..)
 import Time
@@ -12,7 +12,7 @@ import Views.View exposing (..)
 main =
     Browser.element
         { init = model
-        , view = view >> toUnstyled
+        , view = view
         , update = update
         , subscriptions = subscriptions
         }
@@ -20,4 +20,7 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every 1000 Tick
+    Sub.batch
+        [ Time.every 1000 Tick
+        , Navbar.subscriptions model.navbarState NavbarMsg
+        ]
