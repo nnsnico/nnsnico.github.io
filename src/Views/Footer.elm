@@ -1,5 +1,7 @@
 module Views.Footer exposing (footer)
 
+import Bootstrap.Grid as Grid
+import Bootstrap.Grid.Row as Row
 import Color exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -50,14 +52,23 @@ footer model =
         second =
             Time.toSecond model.zone model.time
     in
-    div
-        [ style "width" "100%"
-        , style "background-color" (Color.toCssString (rgb255 255 125 17))
-        , style "position" "absolute"
-        , style "bottom" "0"
-        , style "right" "0"
-        , style "padding" "0px 16px"
+    Html.footer
+        [ style "background-color" (Color.toCssString (rgb255 255 125 17))
+        , style "padding" "2rem 0"
+        , style "margin-top" "4rem"
         ]
-        [ div [ style "color" "white" ]
-            [ text (timeContent hour minute second) ]
+        [ Grid.container [ style "color" "white" ]
+            [ Grid.row []
+                [ Grid.col []
+                    [ text "Created by "
+                    , a
+                        [ href "https://github.com/nnsnico"
+                        , style "color" "white"
+                        ]
+                        [ text "@nnsnico" ]
+                    ]
+                , Grid.col []
+                    [ text (timeContent hour minute second) ]
+                ]
+            ]
         ]
