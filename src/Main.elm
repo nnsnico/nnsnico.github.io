@@ -6,7 +6,7 @@ import Models.Model exposing (..)
 import Msgs exposing (..)
 import Time
 import Update.Update exposing (..)
-import Views.View exposing (..)
+import Views.MainView exposing (..)
 
 
 main =
