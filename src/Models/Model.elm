@@ -20,7 +20,7 @@ type alias Model =
     , diceFace : Int
     , zone : Time.Zone
     , time : Time.Posix
-    , topic : String
+    , topic : Maybe String
     , url : String
     , statusMessage : String
     , loadingStatus : LoadingVisibility
@@ -44,7 +44,7 @@ model _ =
       , diceFace = 1
       , zone = Time.utc
       , time = Time.millisToPosix 0
-      , topic = "otaku"
+      , topic = Just "otaku"
       , url = "waiting.gif"
       , statusMessage = ""
       , loadingStatus = Gone

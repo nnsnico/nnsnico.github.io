@@ -10,11 +10,12 @@ type Msg
     = NavbarMsg Navbar.State
     | Names (List String)
     | InputText String
+    | InputTopic String
     | Update (Maybe String)
     | Roll
     | NewFace Int
     | Tick Time.Posix
     | AdjustTimeZone Time.Zone
-    | MakeGif
+    | MakeGif (Maybe String)
     | NewGif (Result Http.Error String)
     | NoOp
