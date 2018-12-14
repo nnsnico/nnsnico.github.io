@@ -37,6 +37,11 @@ update msg model =
             , Cmd.none
             )
 
+        InputTopic newInput ->
+            ( { model | topic = Just newInput }
+            , Cmd.none
+            )
+
         Update newInput ->
             updateInput newInput model
 
@@ -60,10 +65,8 @@ update msg model =
             , Cmd.none
             )
 
-        MakeGif ->
-            ( { model | loadingStatus = Visible }
-            , HttpConnection.getRandomGif model.topic
-            )
+        MakeGif newTopic ->
+            updateGifTopic newTopic model
 
         NewGif result ->
-            updateGif result model
+            loadGif result model
