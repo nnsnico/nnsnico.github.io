@@ -1,4 +1,4 @@
-module Api.HttpConnection exposing (getRandomGif, gifDecoder, toGiphyUrl)
+module Api.HttpConnection exposing (getRandomGif)
 
 import Http
 import Json.Decode as Decode
