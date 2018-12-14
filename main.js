@@ -6866,7 +6866,7 @@ var author$project$Models$Model$model = function (_n0) {
 			navbarState: navbarState,
 			statusMessage: '',
 			time: elm$time$Time$millisToPosix(0),
-			topic: 'otaku',
+			topic: elm$core$Maybe$Just('otaku'),
 			url: 'waiting.gif',
 			zone: elm$time$Time$utc
 		},
@@ -6878,12 +6878,11 @@ var author$project$Models$Model$model = function (_n0) {
 					navbarCmd
 				])));
 };
-var author$project$Models$LoadingStatus$Visible = {$: 'Visible'};
 var author$project$Msgs$NewFace = function (a) {
 	return {$: 'NewFace', a: a};
 };
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
-var author$project$Update$UpdateGif$updateGif = F2(
+var author$project$Update$UpdateGif$loadGif = F2(
 	function (s, model) {
 		if (s.$ === 'Ok') {
 			var newUrl = s.a;
@@ -6900,8 +6899,25 @@ var author$project$Update$UpdateGif$updateGif = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Models$LoadingStatus$Visible = {$: 'Visible'};
 var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$String$trim = _String_trim;
+var author$project$Update$UpdateGif$updateGifTopic = F2(
+	function (s, model) {
+		if (s.$ === 'Just') {
+			var input = s.a;
+			return (elm$core$String$trim(input) !== '') ? _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{
+						loadingStatus: author$project$Models$LoadingStatus$Visible,
+						topic: elm$core$Maybe$Just(input)
+					}),
+				author$project$Api$HttpConnection$getRandomGif(input)) : _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+		} else {
+			return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+		}
+	});
 var author$project$Update$UpdateInput$updateInput = F2(
 	function (s, model) {
 		if (s.$ === 'Just') {
@@ -7083,6 +7099,15 @@ var author$project$Update$Update$update = F2(
 							inputText: elm$core$Maybe$Just(newInput)
 						}),
 					elm$core$Platform$Cmd$none);
+			case 'InputTopic':
+				var newInput = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							topic: elm$core$Maybe$Just(newInput)
+						}),
+					elm$core$Platform$Cmd$none);
 			case 'Update':
 				var newInput = msg.a;
 				return A2(author$project$Update$UpdateInput$updateInput, newInput, model);
@@ -7115,14 +7140,11 @@ var author$project$Update$Update$update = F2(
 						{zone: newZone}),
 					elm$core$Platform$Cmd$none);
 			case 'MakeGif':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{loadingStatus: author$project$Models$LoadingStatus$Visible}),
-					author$project$Api$HttpConnection$getRandomGif(model.topic));
+				var newTopic = msg.a;
+				return A2(author$project$Update$UpdateGif$updateGifTopic, newTopic, model);
 			default:
 				var result = msg.a;
-				return A2(author$project$Update$UpdateGif$updateGif, result, model);
+				return A2(author$project$Update$UpdateGif$loadGif, result, model);
 		}
 	});
 var elm$core$String$append = _String_append;
@@ -8186,16 +8208,27 @@ var author$project$Views$Footer$footer = function (model) {
 					]))
 			]));
 };
-var author$project$Msgs$MakeGif = {$: 'MakeGif'};
+var author$project$Msgs$InputTopic = function (a) {
+	return {$: 'InputTopic', a: a};
+};
+var author$project$Msgs$MakeGif = function (a) {
+	return {$: 'MakeGif', a: a};
+};
+var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$form = _VirtualDom_node('form');
 var elm$html$Html$img = _VirtualDom_node('img');
+var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$label = _VirtualDom_node('label');
+var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
+var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -8212,6 +8245,59 @@ var elm$html$Html$Events$onClick = function (msg) {
 		elm$html$Html$Events$on,
 		'click',
 		elm$json$Json$Decode$succeed(msg));
+};
+var elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
+	});
+var elm$html$Html$Events$targetValue = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	elm$json$Json$Decode$string);
+var elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			elm$json$Json$Decode$map,
+			elm$html$Html$Events$alwaysStop,
+			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
+};
+var elm$html$Html$Events$alwaysPreventDefault = function (msg) {
+	return _Utils_Tuple2(msg, true);
+};
+var elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var elm$html$Html$Events$onSubmit = function (msg) {
+	return A2(
+		elm$html$Html$Events$preventDefaultOn,
+		'submit',
+		A2(
+			elm$json$Json$Decode$map,
+			elm$html$Html$Events$alwaysPreventDefault,
+			elm$json$Json$Decode$succeed(msg)));
 };
 var rundis$elm_bootstrap$Bootstrap$Progress$Animated = function (a) {
 	return {$: 'Animated', a: a};
@@ -8434,7 +8520,42 @@ var author$project$Views$GifGanarator$gifGenerator = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text('ランダムに画像を取得するよぉ'),
+						A2(
+						elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$form,
+								_List_fromArray(
+									[
+										elm$html$Html$Events$onSubmit(
+										author$project$Msgs$MakeGif(model.topic))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$label,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text('↓のにゅうりょくふぉーむで画像を検索するよぉ'),
+												A2(elm$html$Html$br, _List_Nil, _List_Nil),
+												A2(
+												elm$html$Html$input,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$type_('text'),
+														elm$html$Html$Attributes$placeholder('キーワードをにゅーりょく'),
+														elm$html$Html$Attributes$value(
+														A2(elm$core$Maybe$withDefault, '', model.topic)),
+														elm$html$Html$Events$onInput(author$project$Msgs$InputTopic),
+														A2(elm$html$Html$Attributes$style, 'min-width', '16rem')
+													]),
+												_List_Nil)
+											]))
+									]))
+							])),
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
@@ -8474,7 +8595,8 @@ var author$project$Views$GifGanarator$gifGenerator = function (model) {
 										_List_fromArray(
 											[
 												A2(elm$html$Html$Attributes$style, 'margin-right', '4px'),
-												elm$html$Html$Events$onClick(author$project$Msgs$MakeGif)
+												elm$html$Html$Events$onClick(
+												author$project$Msgs$MakeGif(model.topic))
 											]),
 										_List_fromArray(
 											[
@@ -8511,7 +8633,6 @@ var author$project$Views$GifGanarator$gifGenerator = function (model) {
 					]))
 			]));
 };
-var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$p = _VirtualDom_node('p');
 var author$project$Views$Header$header = function (model) {
@@ -8592,66 +8713,8 @@ var author$project$Views$MemoList$listContent = function (names) {
 		},
 		names);
 };
-var elm$html$Html$form = _VirtualDom_node('form');
-var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$ul = _VirtualDom_node('ul');
 var elm$html$Html$Attributes$method = elm$html$Html$Attributes$stringProperty('method');
-var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
-var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
-var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
-var elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
-	});
-var elm$html$Html$Events$targetValue = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	elm$json$Json$Decode$string);
-var elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			elm$json$Json$Decode$map,
-			elm$html$Html$Events$alwaysStop,
-			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
-};
-var elm$html$Html$Events$alwaysPreventDefault = function (msg) {
-	return _Utils_Tuple2(msg, true);
-};
-var elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
-	return {$: 'MayPreventDefault', a: a};
-};
-var elm$html$Html$Events$preventDefaultOn = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
-	});
-var elm$html$Html$Events$onSubmit = function (msg) {
-	return A2(
-		elm$html$Html$Events$preventDefaultOn,
-		'submit',
-		A2(
-			elm$json$Json$Decode$map,
-			elm$html$Html$Events$alwaysPreventDefault,
-			elm$json$Json$Decode$succeed(msg)));
-};
 var author$project$Views$MemoList$memoList = function (model) {
 	return A2(
 		elm$html$Html$div,
