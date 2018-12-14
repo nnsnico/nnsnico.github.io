@@ -16,7 +16,23 @@ gifGenerator : Model -> Html Msg
 gifGenerator model =
     div [ style "margin-top" "8px" ]
         [ label []
-            [ text "ランダムに画像を取得するよぉ"
+            [ div []
+                [ Html.form
+                    [ onSubmit <| MakeGif model.topic ]
+                    [ label []
+                        [ text "↓のにゅうりょくふぉーむで画像を検索するよぉ"
+                        , br [] []
+                        , input
+                            [ type_ "text"
+                            , placeholder "キーワードをにゅーりょく"
+                            , value <| Maybe.withDefault "" model.topic
+                            , onInput <| InputTopic
+                            , style "min-width" "16rem"
+                            ]
+                            []
+                        ]
+                    ]
+                ]
             , div [ style "margin-top" "8px" ]
                 [ img [ src model.url, style "max-width" "500px" ] [] ]
             , div [ style "margin" "8px 0" ]
@@ -26,7 +42,7 @@ gifGenerator model =
                     ]
                     [ button
                         [ style "margin-right" "4px"
-                        , onClick MakeGif
+                        , onClick <| MakeGif <| model.topic
                         ]
                         [ text "GIF生成" ]
                     , Progress.progress
