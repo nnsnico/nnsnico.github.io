@@ -2,9 +2,8 @@ module Models.Model exposing (Model, model)
 
 import Api.HttpConnection as HttpConnection
 import Bootstrap.Navbar as Navbar
-import Css exposing (..)
 import Models.LoadingStatus exposing (LoadingVisibility(..))
-import Msgs exposing (..)
+import Msgs exposing (Msg(..))
 import Task
 import Time
 

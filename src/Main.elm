@@ -2,11 +2,11 @@ module Main exposing (main)
 
 import Bootstrap.Navbar as Navbar
 import Browser
-import Models.Model exposing (..)
-import Msgs exposing (..)
+import Models.Model exposing (Model, model)
+import Msgs exposing (Msg(..))
 import Time
-import Update.Update exposing (..)
-import Views.MainView exposing (..)
+import Update.Update exposing (update)
+import Views.MainView exposing (view)
 
 
 main : Program () Model Msg

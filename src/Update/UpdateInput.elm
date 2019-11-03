@@ -1,6 +1,6 @@
 module Update.UpdateInput exposing (updateInput)
 
-import Models.Model exposing (..)
+import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 
 

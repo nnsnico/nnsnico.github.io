@@ -1,9 +1,9 @@
 module Views.MemoList exposing (memoList)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Models.Model exposing (..)
+import Html exposing (Html, br, button, div, input, label, li, text, ul)
+import Html.Attributes exposing (method, placeholder, type_, value)
+import Html.Events exposing (onInput, onSubmit)
+import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 
 

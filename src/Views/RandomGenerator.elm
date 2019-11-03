@@ -1,9 +1,8 @@
 module Views.RandomGenerator exposing (randomGenerator)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Models.Model exposing (..)
+import Html exposing (Html, button, div, label, text)
+import Html.Events exposing (onClick)
+import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 
 

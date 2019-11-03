@@ -1,13 +1,11 @@
 module Update.Update exposing (update)
 
-import Api.HttpConnection as HttpConnection
 import Models.LoadingStatus exposing (LoadingVisibility(..))
-import Models.Model exposing (Model, model)
-import Msgs exposing (..)
+import Models.Model exposing (Model)
+import Msgs exposing (Msg(..))
 import Random
-import Time
-import Update.UpdateGif exposing (..)
-import Update.UpdateInput exposing (..)
+import Update.UpdateGif exposing (loadGif, updateGifTopic)
+import Update.UpdateInput exposing (updateInput)
 
 
 

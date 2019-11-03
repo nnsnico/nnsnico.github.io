@@ -1,12 +1,11 @@
 module Views.Navbar exposing (navbar)
 
 import Bootstrap.Navbar as Navbar
-import Color exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Models.Model exposing (..)
-import Msgs exposing (..)
+import Color exposing (rgb255)
+import Html exposing (Html, text)
+import Html.Attributes exposing (href, style)
+import Models.Model exposing (Model)
+import Msgs exposing (Msg(..))
 
 
 navbar : Model -> Html Msg

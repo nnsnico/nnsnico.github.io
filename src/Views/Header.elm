@@ -1,16 +1,15 @@
 module Views.Header exposing (header)
 
 import Bootstrap.Grid as Grid
-import Color exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Models.Model exposing (..)
+import Color exposing (rgb255, toCssString)
+import Html exposing (Html, br, div, h1, p, text)
+import Html.Attributes exposing (style)
+import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 
 
 header : Model -> Html Msg
-header model =
+header _ =
     div
         [ style "padding" "2rem 15px"
         , style "background-color" (Color.toCssString (rgb255 255 125 17))

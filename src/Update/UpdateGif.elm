@@ -3,8 +3,8 @@ module Update.UpdateGif exposing (loadGif, updateGifTopic)
 import Api.HttpConnection as HttpConnection
 import Http
 import Models.LoadingStatus exposing (LoadingVisibility(..))
-import Models.Model exposing (..)
-import Msgs exposing (..)
+import Models.Model exposing (Model)
+import Msgs exposing (Msg(..))
 
 
 updateGifTopic : Maybe String -> Model -> ( Model, Cmd Msg )

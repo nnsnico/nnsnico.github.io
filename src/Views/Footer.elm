@@ -1,12 +1,10 @@
 module Views.Footer exposing (footer)
 
 import Bootstrap.Grid as Grid
-import Bootstrap.Grid.Row as Row
-import Color exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Models.Model exposing (..)
+import Color exposing (rgb255, toCssString)
+import Html exposing (Html, a, text)
+import Html.Attributes exposing (href, style)
+import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 import Time
 

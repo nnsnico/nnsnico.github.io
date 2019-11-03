@@ -1,14 +1,11 @@
 module Views.GifGanarator exposing (gifGenerator)
 
-import Bootstrap.Grid as Grid
-import Bootstrap.Grid.Col as Col
-import Bootstrap.Grid.Row as Row
 import Bootstrap.Progress as Progress
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Models.LoadingStatus exposing (..)
-import Models.Model exposing (..)
+import Html exposing (Html, br, button, div, img, input, label, text)
+import Html.Attributes exposing (placeholder, src, style, type_, value)
+import Html.Events exposing (onClick, onInput, onSubmit)
+import Models.LoadingStatus exposing (LoadingVisibility(..))
+import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 
 

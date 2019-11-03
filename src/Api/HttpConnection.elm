@@ -2,7 +2,7 @@ module Api.HttpConnection exposing (getRandomGif)
 
 import Http
 import Json.Decode as Decode
-import Msgs exposing (..)
+import Msgs exposing (Msg(..))
 import Url.Builder as Url
 
 
