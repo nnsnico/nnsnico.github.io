@@ -9,8 +9,9 @@ import Update.Update exposing (..)
 import Views.MainView exposing (..)
 
 
+main : Program () Model Msg
 main =
-    Browser.element
+    Browser.document
         { init = model
         , view = view
         , update = update

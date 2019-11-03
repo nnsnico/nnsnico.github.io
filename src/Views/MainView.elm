@@ -4,6 +4,7 @@ import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
+import Browser exposing (Document)
 import Color exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -17,9 +18,10 @@ import Views.Navbar exposing (navbar)
 import Views.RandomGenerator exposing (randomGenerator)
 
 
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
-    div []
+    { title = "nnsnico"
+    , body =
         [ navbar model
         , header model
         , Grid.container [ style "max-width" "100%" ]
@@ -36,3 +38,4 @@ view model =
             ]
         , footer model
         ]
+    }
