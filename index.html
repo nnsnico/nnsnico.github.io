@@ -8239,6 +8239,13 @@ var author$project$Views$Footer$footer = function (model) {
 					]))
 			]));
 };
+var author$project$Models$LoadingStatus$toCssProperties = function (status) {
+	if (status.$ === 'Visible') {
+		return 'visible';
+	} else {
+		return 'hidden';
+	}
+};
 var author$project$Msgs$InputTopic = function (a) {
 	return {$: 'InputTopic', a: a};
 };
@@ -8645,7 +8652,7 @@ var author$project$Views$GifGanarator$gifGenerator = function (model) {
 														A2(
 														elm$html$Html$Attributes$style,
 														'visibility',
-														_Utils_eq(model.loadingStatus, author$project$Models$LoadingStatus$Visible) ? 'visible' : 'hidden')
+														author$project$Models$LoadingStatus$toCssProperties(model.loadingStatus))
 													]))
 											]))
 									]))
@@ -8666,7 +8673,7 @@ var author$project$Views$GifGanarator$gifGenerator = function (model) {
 };
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$p = _VirtualDom_node('p');
-var author$project$Views$Header$header = function (model) {
+var author$project$Views$Header$header = function (_n0) {
 	return A2(
 		elm$html$Html$div,
 		_List_fromArray(
@@ -9748,54 +9755,48 @@ var author$project$Views$MainView$view = function (model) {
 	return {
 		body: _List_fromArray(
 			[
+				author$project$Views$Navbar$navbar(model),
+				author$project$Views$Header$header(model),
 				A2(
-				elm$html$Html$div,
-				_List_Nil,
+				rundis$elm_bootstrap$Bootstrap$Grid$container,
 				_List_fromArray(
 					[
-						author$project$Views$Navbar$navbar(model),
-						author$project$Views$Header$header(model),
+						A2(elm$html$Html$Attributes$style, 'max-width', '100%')
+					]),
+				_List_fromArray(
+					[
+						rundis$elm_bootstrap$Bootstrap$CDN$stylesheet,
+						rundis$elm_bootstrap$Bootstrap$CDN$fontAwesome,
 						A2(
-						rundis$elm_bootstrap$Bootstrap$Grid$container,
+						rundis$elm_bootstrap$Bootstrap$Grid$row,
 						_List_fromArray(
 							[
-								A2(elm$html$Html$Attributes$style, 'max-width', '100%')
+								rundis$elm_bootstrap$Bootstrap$Grid$Row$attrs(
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('main-container')
+									]))
 							]),
 						_List_fromArray(
 							[
-								rundis$elm_bootstrap$Bootstrap$CDN$stylesheet,
-								rundis$elm_bootstrap$Bootstrap$CDN$fontAwesome,
 								A2(
-								rundis$elm_bootstrap$Bootstrap$Grid$row,
+								rundis$elm_bootstrap$Bootstrap$Grid$col,
+								_List_Nil,
 								_List_fromArray(
 									[
-										rundis$elm_bootstrap$Bootstrap$Grid$Row$attrs(
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('main-container')
-											]))
-									]),
+										author$project$Views$MemoList$memoList(model)
+									])),
+								A2(
+								rundis$elm_bootstrap$Bootstrap$Grid$col,
+								_List_Nil,
 								_List_fromArray(
 									[
-										A2(
-										rundis$elm_bootstrap$Bootstrap$Grid$col,
-										_List_Nil,
-										_List_fromArray(
-											[
-												author$project$Views$MemoList$memoList(model)
-											])),
-										A2(
-										rundis$elm_bootstrap$Bootstrap$Grid$col,
-										_List_Nil,
-										_List_fromArray(
-											[
-												author$project$Views$RandomGenerator$randomGenerator(model),
-												author$project$Views$GifGanarator$gifGenerator(model)
-											]))
+										author$project$Views$RandomGenerator$randomGenerator(model),
+										author$project$Views$GifGanarator$gifGenerator(model)
 									]))
-							])),
-						author$project$Views$Footer$footer(model)
-					]))
+							]))
+					])),
+				author$project$Views$Footer$footer(model)
 			]),
 		title: 'nnsnico'
 	};

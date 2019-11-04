@@ -4,7 +4,7 @@ import Bootstrap.Progress as Progress
 import Html exposing (Html, br, button, div, img, input, label, text)
 import Html.Attributes exposing (placeholder, src, style, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
-import Models.LoadingStatus exposing (LoadingVisibility(..))
+import Models.LoadingStatus as LoadingStatus
 import Models.Model exposing (Model)
 import Msgs exposing (Msg(..))
 
@@ -47,12 +47,7 @@ gifGenerator model =
                         , Progress.animated
                         , Progress.attrs
                             [ style "width" "8rem"
-                            , style "visibility" <|
-                                if model.loadingStatus == Visible then
-                                    "visible"
-
-                                else
-                                    "hidden"
+                            , style "visibility" <| LoadingStatus.toCssProperties model.loadingStatus
                             ]
                         ]
                     ]
