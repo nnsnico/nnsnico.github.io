@@ -5,3 +5,7 @@
 ## Development
 
 - Reactでつくるらしい
+
+```
+npm run build
+```
