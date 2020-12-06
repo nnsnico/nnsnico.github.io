@@ -1,7 +1,18 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "ESNext", // TSのモジュールはES Modulesとして出力
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es5", // TSはECMAScript 5に変換
-    "module": "es2015" // TSのモジュールはES Modulesとして出力
-  }
+    "strict": true,
+    "target": "es5" // TSはECMAScript 5に変換
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
