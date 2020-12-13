@@ -1,29 +1,29 @@
-const path = require("path");
-const ReactRefreshPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const webpack = require("webpack");
+const path = require('path');
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   // モード値を production に設定すると最適化された状態で、
   // development に設定するとソースマップ有効でJSファイルが出力される
-  mode: "development",
+  mode: 'development',
   // メインとなるJavaScriptファイル（エントリーポイント）
-  entry: "./src/index.tsx",
+  entry: './src/index.tsx',
   module: {
     rules: [
       {
         // 拡張子 .ts, .tsx の場合
         test: /\.[jt]sx?$/,
         exclude: /node_modules/,
-        include: path.join(__dirname, "src"),
+        include: path.join(__dirname, 'src'),
         use: [
           {
-            loader: "babel-loader",
+            loader: 'babel-loader',
             options: {
-              plugins: ["react-refresh/babel"],
+              plugins: ['react-refresh/babel'],
             },
           },
           {
-            loader: "ts-loader",
+            loader: 'ts-loader',
             options: { transpileOnly: true },
           },
         ].filter(Boolean),
@@ -40,10 +40,10 @@ module.exports = {
   // 記載したほうがトラブルに巻き込まれにくい。
   resolve: {
     // 拡張子を配列で指定
-    extensions: [".ts", ".js", ".tsx", ".jsx"],
+    extensions: ['.ts', '.js', '.tsx', '.jsx'],
   },
   devServer: {
-    publicPath: "/dist",
+    publicPath: '/dist',
     hot: true,
     compress: true,
     port: 9000,
