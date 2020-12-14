@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Flex,
   Tab,
@@ -7,6 +6,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
+import React from 'react';
 
 const Footer: React.FC = () => {
   return (
