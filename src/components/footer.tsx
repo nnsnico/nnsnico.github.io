@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
       <Tabs>
         <TabList>
           <Tab>キーキャップ</Tab>
-          <Tab>BBC</Tab>
+          <Tab>PCB(基盤)</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
