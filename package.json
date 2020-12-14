@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "watchDev": "webpack serve"
+    "watch": "webpack serve"
   },
   "eslintConfig": {
     "extends": [
