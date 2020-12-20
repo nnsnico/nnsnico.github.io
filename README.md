@@ -4,7 +4,7 @@
 
 ## Development
 
-- Reactでつくるらしい
+- React でつくるらしい
 
 ```
 npm run build

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "watch": "webpack serve"
+    "watch": "webpack serve",
+    "lint": "npx eslint . && npx prettier --check ."
   },
   "eslintConfig": {
     "extends": [
