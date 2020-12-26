@@ -9,11 +9,13 @@ import Navigation from './components/navigation';
 const App: React.FC = () => {
   return (
     <div>
-      <Navigation />
       <DndProvider backend={HTML5Backend}>
-        <KeyBoard text={'hello!'} />
+        <Navigation />
+        <div style={{ display: 'flex' }}>
+          <KeyBoard />
+        </div>
+        <Footer />
       </DndProvider>
-      <Footer />
     </div>
   );
 };

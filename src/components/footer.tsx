@@ -8,6 +8,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
+import KeyCap from './keycap';
+
 const Footer: React.FC = () => {
   return (
     <Flex
@@ -18,7 +20,8 @@ const Footer: React.FC = () => {
       justify="space-between"
       wrap="wrap"
       padding="1.5rem"
-      bg="white">
+      bg="white"
+      style={{ zIndex: 1000 }}>
       <Tabs>
         <TabList>
           <Tab>キーキャップ</Tab>
@@ -26,13 +29,16 @@ const Footer: React.FC = () => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <p>one!</p>
+            <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
+              <KeyCap />
+              <KeyCap />
+              <KeyCap />
+              <KeyCap />
+              <KeyCap />
+            </Flex>
           </TabPanel>
           <TabPanel>
             <p>two!</p>
-          </TabPanel>
-          <TabPanel>
-            <p>three!</p>
           </TabPanel>
         </TabPanels>
       </Tabs>
