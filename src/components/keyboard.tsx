@@ -1,25 +1,26 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { useDrag } from 'react-dnd';
+import { useSelector } from 'react-redux';
 
-type KeyboardProps = {
-  text: string;
-};
+import { RootState } from '../reducer';
 
-const w = {
+const w: React.CSSProperties = {
   position: 'absolute',
   width: '100%',
-  top: 0,
-} as CSSProperties;
-const s = {
+  // TODO: これがあるとNavigationに覆いかぶさってしまう
+  // top: 0,
+};
+const s: React.CSSProperties = {
   display: 'flex',
-  'align-items': 'center',
+  alignItems: 'center',
   height: '100vh',
-  'justify-content': 'center',
-} as CSSProperties;
+  justifyContent: 'center',
+};
 
-const KeyBoard: React.FC<KeyboardProps> = ({ text }) => {
+const KeyBoard: React.FC = () => {
+  const count = useSelector((state: RootState) => state.counter);
   const [{ opacity, width, margin }, dragRef] = useDrag({
-    item: { type: 'example', text },
+    item: { type: 'example' },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0 : 1,
       width: '800px',
@@ -35,6 +36,7 @@ const KeyBoard: React.FC<KeyboardProps> = ({ text }) => {
           }
           ref={dragRef}
           style={{ opacity, width, margin }}
+          onClick={() => console.log(count)}
         />
       </div>
     </div>
