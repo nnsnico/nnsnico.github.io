@@ -2,7 +2,7 @@ import { Button, Flex } from '@chakra-ui/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AppDispatch, decrement, increment, RootState } from '../reducer/index';
+import { AppDispatch, decrement, increment, RootState } from '../reducer';
 import Logo from './logo';
 
 const Navigation: React.FC = () => {

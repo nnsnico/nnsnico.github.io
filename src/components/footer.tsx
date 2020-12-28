@@ -30,15 +30,13 @@ const Footer: React.FC = () => {
         <TabPanels>
           <TabPanel>
             <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
-              <KeyCap />
-              <KeyCap />
-              <KeyCap />
-              <KeyCap />
-              <KeyCap />
+              {createKeyCaps()}
             </Flex>
           </TabPanel>
           <TabPanel>
-            <p>two!</p>
+            <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
+              {createKeyCaps()}
+            </Flex>
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -46,4 +44,12 @@ const Footer: React.FC = () => {
   );
 };
 
+function createKeyCaps() {
+  const caps = [];
+  const amount = 10;
+  for (let i = 0; i < amount; i++) {
+    caps.push(<KeyCap id={i} />);
+  }
+  return caps;
+}
 export default Footer;
