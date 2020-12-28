@@ -11,9 +11,7 @@ const App: React.FC = () => {
     <div>
       <Navigation />
       <DndProvider backend={HTML5Backend}>
-        <div style={{ display: 'flex' }}>
-          <KeyBoard />
-        </div>
+        <KeyBoard />
         <Footer />
       </DndProvider>
     </div>
