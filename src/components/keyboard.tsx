@@ -1,55 +1,82 @@
 import React from 'react';
-import { useDrop, XYCoord } from 'react-dnd';
-import { useSelector } from 'react-redux';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { RootState } from '../reducer';
-import KeyCap, { KeyCapId } from './keycap';
+import { insertKeyCap, updateKeyCapPosition, RootState } from '../reducer';
+import { KeyCapId } from '../types';
+import KeyCap from './keycap';
 
-const w: React.CSSProperties = {
+const wrappedDivStyle: React.CSSProperties = {
   position: 'absolute',
   width: '100%',
   top: 0,
   zIndex: -1,
 };
-const s: React.CSSProperties = {
+
+const keyboardStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   height: '100vh',
   justifyContent: 'center',
 };
-let x = 0;
-let y = 0;
+
 const KeyBoard: React.FC = () => {
-  const capId: KeyCapId = useSelector((state: RootState) => state.keyCap);
-  const [{ isOver, canDrop }, drop] = useDrop({
+  // const { draggingKeycapId } = useSelector((state: RootState) => state.keyCap);
+  const { putKeycaps } = useSelector((state: RootState) => state.keyboard);
+  const dispatch = useDispatch();
+  const [, drop] = useDrop({
     accept: 'keycap',
     canDrop: () => true,
-    drop: (item, monitor) => {
-      //keyCap描画
-      const off: XYCoord | null = monitor.getClientOffset();
-      if (off != null) {
-        x = off.x;
-        y = off.y;
+    // keyboard内でD&Dしたときに呼ばれる
+    drop: (_, monitor) => {
+      const offset = monitor.getClientOffset();
+      const id = monitor.getItem().id;
+      const idSet = putKeycaps.map((v) => v.id);
+      if (offset != null) {
+        if (idSet.includes(id)) {
+          dispatch(
+            updateKeyCapPosition({
+              id,
+              position: {
+                x: offset.x,
+                y: offset.y,
+              },
+            })
+          );
+        } else {
+          dispatch(
+            insertKeyCap({
+              id,
+              position: {
+                x: offset.x,
+                y: offset.y,
+              },
+            })
+          );
+        }
       }
     },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-      canDrop: !!monitor.canDrop(),
-    }),
   });
+
   return (
-    <div style={w}>
-      <div style={s} ref={drop}>
-        {renderKeyCap(capId, x, y)}
+    <div style={wrappedDivStyle}>
+      <div style={keyboardStyle} ref={drop}>
+        {putKeycaps.map((keycap) =>
+          renderKeyCap(keycap.id, keycap.position.x, keycap.position.y)
+        )}
       </div>
     </div>
   );
 };
 
 function renderKeyCap(capId: KeyCapId, x: number, y: number) {
-  if (capId != -1) {
+  if (capId != null) {
     return (
-      <KeyCap id={capId} styles={{ position: 'fixed', top: y, left: x }} />
+      <KeyCap
+        key={capId}
+        id={capId}
+        styles={{ position: 'fixed', top: y, left: x }}
+      />
     );
   }
 }

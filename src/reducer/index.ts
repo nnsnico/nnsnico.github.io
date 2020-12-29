@@ -5,9 +5,9 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 
-import { KeyCapId } from '../components/keycap';
+import { KeyCapId } from '../types';
 
-// reducer
+// counter state
 const counterSlice = createSlice({
   name: 'counter',
   initialState: 0,
@@ -16,22 +16,49 @@ const counterSlice = createSlice({
     decrement: (state) => state - 1,
   },
 });
-const keyCapSlice = createSlice({
-  name: 'transporter',
-  initialState: -1 as KeyCapId,
+
+// keyboard state
+interface KeyboardState {
+  putKeycaps: KeyCap[]; // keyboard上に設置されているKeycapのリスト
+}
+interface KeyCap {
+  id: KeyCapId;
+  position: Position;
+}
+interface Position {
+  x: number;
+  y: number;
+}
+const keyboardSlice = createSlice({
+  name: 'keyboard',
+  initialState: { putKeycaps: [] } as KeyboardState,
   reducers: {
-    setCapId: (state: KeyCapId, action: PayloadAction<KeyCapId>) =>
-      action.payload,
+    // TODO: 同じタイプのキーを置きたいとき(Shiftキーなど)、一意性をもたせるためにはどうするべきか
+    insertKeyCap: (state: KeyboardState, action: PayloadAction<KeyCap>) =>
+      Object.assign(state, {
+        putKeycaps: state.putKeycaps.concat([action.payload]),
+      }),
+    updateKeyCapPosition: (
+      state: KeyboardState,
+      action: PayloadAction<KeyCap>
+    ) =>
+      Object.assign(state, {
+        putKeycaps: state.putKeycaps.map((v) =>
+          v.id == action.payload.id ? action.payload : v
+        ),
+      }),
   },
 });
+
+// reducers
 const reducers = combineReducers({
   counter: counterSlice.reducer,
-  keyCap: keyCapSlice.reducer,
+  keyboard: keyboardSlice.reducer,
 });
 
 // actions
 export const { increment, decrement } = counterSlice.actions;
-export const { setCapId } = keyCapSlice.actions;
+export const { insertKeyCap, updateKeyCapPosition } = keyboardSlice.actions;
 
 // store
 export const store = createStore(reducers);

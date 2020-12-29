@@ -1,35 +1,36 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
-import { AppDispatch, setCapId } from '../reducer';
+import { KeyCapId } from '../types';
 
-export type KeyCapId = number;
-type KeyCapProps = {
+interface KeyCapProps {
   id: KeyCapId;
-  styles: React.CSSProperties;
-};
+  styles?: React.CSSProperties;
+}
 
 const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [{ opacity, width }, dragRef] = useDrag({
-    item: { type: 'keycap' },
-    begin: () => {
-      dispatch(setCapId(props.id));
-    },
+  const id = props.id.toString();
+  const [{ opacity }, dragRef] = useDrag({
+    item: { type: 'keycap', id },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0 : 1,
-      width: '200px',
     }),
   });
+
   return (
-    <img
-      src={
-        'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
-      }
+    <div
       ref={dragRef}
-      style={Object.assign({ opacity, width, zIndex: 1 }, props.styles)}
-    />
+      style={Object.assign(
+        { opacity, width: '200px', zIndex: 1 },
+        props.styles
+      )}>
+      <img
+        src={
+          'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
+        }
+      />
+      <span>{id}</span>
+    </div>
   );
 };
 

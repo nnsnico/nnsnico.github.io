@@ -48,7 +48,7 @@ function createKeyCaps() {
   const caps = [];
   const amount = 10;
   for (let i = 0; i < amount; i++) {
-    caps.push(<KeyCap id={i} />);
+    caps.push(<KeyCap id={i.toString()} />);
   }
   return caps;
 }
