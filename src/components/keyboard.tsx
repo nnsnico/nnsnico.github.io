@@ -31,28 +31,19 @@ const KeyBoard: React.FC = () => {
     drop: (_, monitor) => {
       const offset = monitor.getClientOffset();
       const id = monitor.getItem().id;
-      const idSet = putKeycaps.map((v) => v.id);
       if (offset != null) {
+        const idSet = putKeycaps.map((v) => v.id);
+        const keycap = {
+          id: monitor.getItem().id,
+          position: {
+            x: offset.x,
+            y: offset.y,
+          },
+        };
         if (idSet.includes(id)) {
-          dispatch(
-            updateKeyCapPosition({
-              id,
-              position: {
-                x: offset.x,
-                y: offset.y,
-              },
-            })
-          );
+          dispatch(updateKeyCapPosition(keycap));
         } else {
-          dispatch(
-            insertKeyCap({
-              id,
-              position: {
-                x: offset.x,
-                y: offset.y,
-              },
-            })
-          );
+          dispatch(insertKeyCap(keycap));
         }
       }
     },
