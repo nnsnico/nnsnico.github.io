@@ -26,7 +26,7 @@ interface Position {
 }
 
 // action payload
-export interface KeycapPayload {
+export interface KeyboardPayload {
   size: KeycapSize;
   usedKey: UsedKey;
 }
@@ -37,7 +37,7 @@ const keyboardSlice = createSlice({
   reducers: {
     insertKeyCap: (
       state: KeyboardState,
-      action: PayloadAction<KeycapPayload>
+      action: PayloadAction<KeyboardPayload>
     ) => {
       const newPutKeycaps: Keycap[] =
         // keyboard上で配置されているkeycapのsizeと同じか
@@ -46,17 +46,18 @@ const keyboardSlice = createSlice({
           ? // Keyboard上にないsizeのkeycapであれば、新規作成
             // state.putkeycap内のusedKeysに追加
             produce(state.putKeycaps, (draft) => {
+              const newUsedKeycaps = produce(
+                // sizeが一致しているobjectからusedKeysだけ抽出して追加
+                draft
+                  .filter((v) => v.size === action.payload.size)
+                  .flatMap((v) => v.usedKeys),
+                (draftUsedKeys) => {
+                  draftUsedKeys.push(action.payload.usedKey);
+                }
+              );
               draft.push({
                 size: action.payload.size,
-                usedKeys: produce(
-                  // sizeが一致しているobjectからusedKeysだけ抽出して追加
-                  draft
-                    .filter((v) => v.size === action.payload.size)
-                    .flatMap((v) => v.usedKeys),
-                  (usedKeys) => {
-                    usedKeys.push(action.payload.usedKey);
-                  }
-                ),
+                usedKeys: newUsedKeycaps,
               });
             })
           : // keyboard上に既にあるsizeならばsizeをもとにusedKeysに追加
@@ -68,14 +69,13 @@ const keyboardSlice = createSlice({
                 : keycap
             );
 
-      return {
-        ...state,
-        putKeycaps: newPutKeycaps,
-      };
+      return produce(state, (draft) => {
+        draft.putKeycaps = newPutKeycaps;
+      });
     },
     updateKeyCapPosition: (
       state: KeyboardState,
-      action: PayloadAction<KeycapPayload>
+      action: PayloadAction<KeyboardPayload>
     ) => {
       // 新しくputkeycapsを作る
       const newPutKeycaps: Keycap[] = state.putKeycaps.flatMap((putKeycap) => {
@@ -90,10 +90,9 @@ const keyboardSlice = createSlice({
         });
       });
 
-      return {
-        ...state,
-        putKeycaps: newPutKeycaps,
-      };
+      return produce(state, (draft) => {
+        draft.putKeycaps = newPutKeycaps;
+      });
     },
   },
 });

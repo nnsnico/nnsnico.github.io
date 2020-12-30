@@ -24,10 +24,7 @@ const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
   return (
     <div
       ref={dragRef}
-      style={Object.assign(
-        { opacity, width: '200px', zIndex: 1 },
-        props.styles
-      )}>
+      style={{ ...props.styles, opacity, width: '200px', zIndex: 1 }}>
       <img
         src={
           'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
