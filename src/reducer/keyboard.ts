@@ -4,7 +4,7 @@ import produce from 'immer';
 import { KeycapSize } from '../types';
 
 // keyboard上に設置されているKeycapのリスト
-interface KeyboardState {
+export interface KeyboardState {
   putKeycaps: Keycap[];
 }
 

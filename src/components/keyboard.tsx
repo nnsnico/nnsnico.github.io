@@ -3,7 +3,7 @@ import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { insertKeyCap, updateKeyCapPosition, RootState } from '../reducer';
-import { KeycapPayload } from '../reducer/keyboard';
+import { KeyboardPayload } from '../reducer/keyboard';
 import { KeycapSize } from '../types';
 import KeyCap from './keycap';
 
@@ -53,7 +53,7 @@ const KeyBoard: React.FC = () => {
               })
             );
           } else {
-            const keycap: KeycapPayload = {
+            const keycap: KeyboardPayload = {
               size: monitor.getItem().size,
               usedKey: {
                 id: monitor.getItem()._key,
