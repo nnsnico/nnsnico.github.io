@@ -1,17 +1,21 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
-import { KeyCapId } from '../types';
+import { KeycapSize } from '../types';
 
 interface KeyCapProps {
-  id: KeyCapId;
+  _key: string;
+  size: KeycapSize;
   styles?: React.CSSProperties;
+  isDragedFromTab?: boolean;
 }
 
 const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
-  const id = props.id.toString();
+  const _key = props._key;
+  const size = props.size.toString();
+  const isDragedFromTab = props.isDragedFromTab;
   const [{ opacity }, dragRef] = useDrag({
-    item: { type: 'keycap', id },
+    item: { type: 'keycap', _key, size, isDragedFromTab },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0 : 1,
     }),
@@ -29,7 +33,7 @@ const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
           'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
         }
       />
-      <span>{id}</span>
+      <span>{_key}</span>
     </div>
   );
 };

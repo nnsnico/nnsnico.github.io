@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
+import { keycapSize } from '../types';
 import KeyCap from './keycap';
 
 const Footer: React.FC = () => {
@@ -46,9 +47,9 @@ const Footer: React.FC = () => {
 
 function createKeyCaps() {
   const caps = [];
-  const amount = 10;
-  for (let i = 0; i < amount; i++) {
-    caps.push(<KeyCap id={i.toString()} />);
+  const ids = keycapSize;
+  for (const i of ids) {
+    caps.push(<KeyCap key={i.toString()} _key={i} size={i} isDragedFromTab />);
   }
   return caps;
 }
