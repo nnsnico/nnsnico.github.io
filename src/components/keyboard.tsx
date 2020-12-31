@@ -1,10 +1,11 @@
+import * as O from 'fp-ts/es6/Option';
+import { pipe } from 'fp-ts/es6/function';
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeyCap, updateKeyCapPosition, RootState } from '../reducer';
-import { KeyboardPayload } from '../reducer/keyboard';
-import { KeycapSize } from '../types';
+import { insertKeyCap, updateKeyCapPosition } from '../reducer';
+import { DragItem, KeycapSize, RootState } from '../types';
 import KeyCap from './keycap';
 
 const wrappedDivStyle: React.CSSProperties = {
@@ -29,57 +30,55 @@ const KeyBoard: React.FC = () => {
     accept: 'keycap',
     canDrop: () => true,
     drop: (_, monitor) => {
-      const offset = monitor.getClientOffset();
-      const size = monitor.getItem().size;
-      if (offset != null) {
-        const usedSizeSet = putKeycaps.map((v) => v.size);
-        // キーボード画面上に同じ大きさのキーキャップがあればidにsuffixをつけて新しく生成。さもなければsuffixなしで生成。
-        if (usedSizeSet.includes(size)) {
-          const usedKeysMatchesSize = putKeycaps
-            .filter((v) => v.size === size)
-            .flatMap((v) => v.usedKeys);
-          // ドラッグしたキーキャップがタブからドラッグしていれば新しく生成。さもなければidをチェックして座標を更新するコンポーネントを選択
-          if (monitor.getItem().isDragedFromTab != null) {
-            dispatch(
-              insertKeyCap({
-                size,
-                usedKey: {
-                  id: size + '_' + usedKeysMatchesSize.length,
-                  position: {
-                    x: offset.x,
-                    y: offset.y,
-                  },
-                },
-              })
-            );
-          } else {
-            const keycap: KeyboardPayload = {
-              size: monitor.getItem().size,
-              usedKey: {
-                id: monitor.getItem()._key,
-                position: {
-                  x: offset.x,
-                  y: offset.y,
-                },
-              },
-            };
-            dispatch(updateKeyCapPosition(keycap));
-          }
-        } else {
-          dispatch(
-            insertKeyCap({
-              size,
-              usedKey: {
-                id: size,
-                position: {
-                  x: offset.x,
-                  y: offset.y,
-                },
-              },
-            })
-          );
-        }
-      }
+      const item = monitor.getItem() as DragItem;
+      const usedKeysMatchesSize = putKeycaps
+        .filter((v) => v.size === item.size)
+        .flatMap((v) => v.usedKeys);
+
+      pipe(
+        O.fromNullable(monitor.getClientOffset()),
+        O.chain((position) =>
+          putKeycaps.filter((v) => v.size === item.size).length !== 0
+            ? O.some(
+                pipe(
+                  item.isDragedFromTab,
+                  O.map(() =>
+                    dispatch(
+                      insertKeyCap({
+                        size: item.size,
+                        usedKey: {
+                          id: item._key + '_' + usedKeysMatchesSize.length,
+                          position,
+                        },
+                      })
+                    )
+                  ),
+                  O.getOrElse(() =>
+                    dispatch(
+                      updateKeyCapPosition({
+                        size: item.size,
+                        usedKey: {
+                          id: item._key,
+                          position,
+                        },
+                      })
+                    )
+                  )
+                )
+              )
+            : O.some(
+                dispatch(
+                  insertKeyCap({
+                    size: item.size,
+                    usedKey: {
+                      id: item._key,
+                      position,
+                    },
+                  })
+                )
+              )
+        )
+      );
     },
   });
 
