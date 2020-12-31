@@ -1,7 +1,7 @@
 import * as O from 'fp-ts/es6/Option';
 import { pipe } from 'fp-ts/es6/function';
 import React from 'react';
-import { useDrop } from 'react-dnd';
+import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { insertKeyCap, updateKeyCapPosition } from '../reducer';
@@ -31,41 +31,44 @@ const KeyBoard: React.FC = () => {
     canDrop: () => true,
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
-      const usedKeysMatchesSize = putKeycaps
-        .filter((v) => v.size === item.size)
-        .flatMap((v) => v.usedKeys);
+      const handledPayloadByFlag = (position: XYCoord) =>
+        pipe(
+          item.isDragedFromTab,
+          O.map(
+            () =>
+              putKeycaps
+                .filter((v) => v.size === item.size)
+                .flatMap((v) => v.usedKeys).length
+          ),
+          O.map((length) =>
+            dispatch(
+              insertKeyCap({
+                size: item.size,
+                usedKey: {
+                  id: item._key + '_' + length,
+                  position,
+                },
+              })
+            )
+          ),
+          O.getOrElse(() =>
+            dispatch(
+              updateKeyCapPosition({
+                size: item.size,
+                usedKey: {
+                  id: item._key,
+                  position,
+                },
+              })
+            )
+          )
+        );
 
       pipe(
         O.fromNullable(monitor.getClientOffset()),
         O.chain((position) =>
           putKeycaps.filter((v) => v.size === item.size).length !== 0
-            ? O.some(
-                pipe(
-                  item.isDragedFromTab,
-                  O.map(() =>
-                    dispatch(
-                      insertKeyCap({
-                        size: item.size,
-                        usedKey: {
-                          id: item._key + '_' + usedKeysMatchesSize.length,
-                          position,
-                        },
-                      })
-                    )
-                  ),
-                  O.getOrElse(() =>
-                    dispatch(
-                      updateKeyCapPosition({
-                        size: item.size,
-                        usedKey: {
-                          id: item._key,
-                          position,
-                        },
-                      })
-                    )
-                  )
-                )
-              )
+            ? O.some(handledPayloadByFlag(position))
             : O.some(
                 dispatch(
                   insertKeyCap({
