@@ -23,7 +23,6 @@ const keyboardStyle: React.CSSProperties = {
 };
 
 const KeyBoard: React.FC = () => {
-  // const { draggingKeycapId } = useSelector((state: RootState) => state.keyCap);
   const { putKeycaps } = useSelector((state: RootState) => state.keyboard);
   const dispatch = useDispatch();
   const [, drop] = useDrop({
@@ -31,57 +30,70 @@ const KeyBoard: React.FC = () => {
     canDrop: () => true,
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
-      const handledPayloadByFlag = (position: XYCoord) =>
+
+      const handleActionByFlag = (position: XYCoord, usedKeysLength: number) =>
         pipe(
-          item.isDragedFromTab,
-          O.map(
-            () =>
-              putKeycaps
-                .filter((v) => v.size === item.size)
-                .flatMap((v) => v.usedKeys).length
-          ),
-          O.map((length) =>
-            dispatch(
-              insertKeyCap({
-                size: item.size,
-                usedKey: {
-                  id: item._key + '_' + length,
-                  position,
-                },
-              })
-            )
+          O.bindTo('_')(item.isDragedFromTab),
+          O.map(() =>
+            insertKeyCap({
+              size: item.size,
+              usedKey: {
+                id: item._key + '_' + usedKeysLength,
+                position,
+              },
+            })
           ),
           O.getOrElse(() =>
-            dispatch(
-              updateKeyCapPosition({
-                size: item.size,
-                usedKey: {
-                  id: item._key,
-                  position,
-                },
-              })
-            )
+            updateKeyCapPosition({
+              size: item.size,
+              usedKey: {
+                id: item._key,
+                position,
+              },
+            })
           )
         );
 
-      pipe(
-        O.fromNullable(monitor.getClientOffset()),
-        O.chain((position) =>
-          putKeycaps.filter((v) => v.size === item.size).length !== 0
-            ? O.some(handledPayloadByFlag(position))
-            : O.some(
-                dispatch(
-                  insertKeyCap({
-                    size: item.size,
-                    usedKey: {
-                      id: item._key,
-                      position,
-                    },
-                  })
-                )
+      const action = pipe(
+        O.bindTo('position')(O.fromNullable(monitor.getClientOffset())),
+        O.bind('usedKeysLength', () =>
+          pipe(
+            O.of(putKeycaps.filter((v) => v.size === item.size)),
+            O.map((keycaps) =>
+              keycaps.length !== 0
+                ? O.some(keycaps.flatMap((v) => v.usedKeys).length)
+                : O.none
+            )
+          )
+        ),
+        O.bind('action', (bind) =>
+          pipe(
+            O.bindTo('length')(bind.usedKeysLength),
+            O.bind('action', (v) =>
+              O.some(handleActionByFlag(bind.position, v.length))
+            ),
+            O.map((v) => O.some(v.action)),
+            O.getOrElse(() =>
+              O.some(
+                insertKeyCap({
+                  size: item.size,
+                  usedKey: {
+                    id: item._key,
+                    position: bind.position,
+                  },
+                })
               )
-        )
+            )
+          )
+        ),
+        O.map((bind) => bind.action)
       );
+
+      if (O.isSome(action)) {
+        dispatch(action.value);
+      } else {
+        console.error('action is none');
+      }
     },
   });
 
