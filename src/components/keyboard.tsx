@@ -1,5 +1,5 @@
-import * as O from 'fp-ts/es6/Option';
-import { pipe } from 'fp-ts/es6/function';
+import * as O from 'fp-ts/Option';
+import { pipe } from 'fp-ts/function';
 import React from 'react';
 import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
