@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
   );
 };
 
-function createKeyCaps() {
+function createKeyCaps(): JSX.Element[] {
   const caps = [];
   const ids = keycapSize;
   for (const i of ids) {

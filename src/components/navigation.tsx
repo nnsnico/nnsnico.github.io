@@ -19,9 +19,9 @@ const Navigation: React.FC = () => {
       boxShadow="xl"
       style={{ zIndex: 1000 }}>
       <Logo />
-      {/* FIXME: checking for redux */}
       <div>
         <span>{count}</span>
+        {/* eslint-disable @typescript-eslint/explicit-function-return-type */}
         <Button onClick={() => dispatch(increment())}>+</Button>
         <Button onClick={() => dispatch(decrement())}>-</Button>
       </div>

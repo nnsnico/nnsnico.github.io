@@ -38,7 +38,7 @@ const keyboardSlice = createSlice({
     insertKeyCap: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
-    ) => {
+    ): KeyboardState => {
       const newPutKeycaps: Keycap[] =
         // keyboard上で配置されているkeycapのsizeと同じか
         state.putKeycaps.filter((v) => v.size === action.payload.size)
@@ -76,7 +76,7 @@ const keyboardSlice = createSlice({
     updateKeyCapPosition: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
-    ) => {
+    ): KeyboardState => {
       // 新しくputkeycapsを作る
       const newPutKeycaps: Keycap[] = state.putKeycaps.flatMap((putKeycap) => {
         // idが一致していればusedKeyをそのまんま入れ替える

@@ -96,17 +96,20 @@ const KeyBoard: React.FC = () => {
   );
 };
 
-function renderKeyCap(capId: string, size: KeycapSize, x: number, y: number) {
-  if (capId != null) {
-    return (
-      <KeyCap
-        key={capId}
-        _key={capId}
-        size={size}
-        styles={{ position: 'fixed', top: y, left: x }}
-      />
-    );
-  }
+function renderKeyCap(
+  capId: string,
+  size: KeycapSize,
+  x: number,
+  y: number
+): JSX.Element {
+  return (
+    <KeyCap
+      key={capId}
+      _key={capId}
+      size={size}
+      styles={{ position: 'fixed', top: y, left: x }}
+    />
+  );
 }
 
 export default KeyBoard;
