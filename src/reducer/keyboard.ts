@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import produce from 'immer';
+import * as A from 'fp-ts/Array';
+import { pipe } from 'fp-ts/function';
 
 import { KeycapSize } from '../types';
 
@@ -39,60 +40,60 @@ const keyboardSlice = createSlice({
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
-      const newPutKeycaps: Keycap[] =
-        // keyboard上で配置されているkeycapのsizeと同じか
-        state.putKeycaps.filter((v) => v.size === action.payload.size)
-          .length === 0
-          ? // Keyboard上にないsizeのkeycapであれば、新規作成
-            // state.putkeycap内のusedKeysに追加
-            produce(state.putKeycaps, (draft) => {
-              const newUsedKeycaps = produce(
-                // sizeが一致しているobjectからusedKeysだけ抽出して追加
-                draft
-                  .filter((v) => v.size === action.payload.size)
-                  .flatMap((v) => v.usedKeys),
-                (draftUsedKeys) => {
-                  draftUsedKeys.push(action.payload.usedKey);
-                }
-              );
-              draft.push({
-                size: action.payload.size,
-                usedKeys: newUsedKeycaps,
-              });
-            })
-          : // keyboard上に既にあるsizeならばsizeをもとにusedKeysに追加
-            state.putKeycaps.map((keycap) =>
-              keycap.size === action.payload.size
-                ? produce(keycap, (draft) => {
-                    draft.usedKeys.push(action.payload.usedKey);
-                  })
-                : keycap
-            );
+      const createInSameSizeKey = pipe(
+        state.putKeycaps,
+        A.map((keycap) =>
+          keycap.size === action.payload.size
+            ? {
+                size: keycap.size,
+                usedKeys: A.snoc(keycap.usedKeys, action.payload.usedKey),
+              }
+            : keycap
+        )
+      );
 
-      return produce(state, (draft) => {
-        draft.putKeycaps = newPutKeycaps;
-      });
+      const createNewKeys = pipe(
+        A.of(state),
+        A.chain((state) =>
+          A.snoc(state.putKeycaps, {
+            size: action.payload.size,
+            usedKeys: A.of(action.payload.usedKey),
+          })
+        )
+      );
+
+      return A.isEmpty(
+        state.putKeycaps.filter((v) => v.size === action.payload.size)
+      )
+        ? { putKeycaps: createNewKeys }
+        : { putKeycaps: createInSameSizeKey };
     },
     updateKeyCapPosition: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
-      // 新しくputkeycapsを作る
-      const newPutKeycaps: Keycap[] = state.putKeycaps.flatMap((putKeycap) => {
-        // idが一致していればusedKeyをそのまんま入れ替える
-        const newUsedKeycaps = putKeycap.usedKeys.map((usedKey) =>
-          usedKey.id === action.payload.usedKey.id
-            ? action.payload.usedKey
-            : usedKey
-        );
-        return produce(putKeycap, (draftPutKeycap) => {
-          draftPutKeycap.usedKeys = newUsedKeycaps;
-        });
-      });
+      const replacePositionMatchesSize: Keycap[] = pipe(
+        state.putKeycaps,
+        A.map((keycap) =>
+          keycap.size === action.payload.size
+            ? {
+                size: action.payload.size,
+                usedKeys: pipe(
+                  keycap.usedKeys,
+                  A.map((usedKey) =>
+                    usedKey.id === action.payload.usedKey.id
+                      ? action.payload.usedKey
+                      : usedKey
+                  )
+                ),
+              }
+            : keycap
+        )
+      );
 
-      return produce(state, (draft) => {
-        draft.putKeycaps = newPutKeycaps;
-      });
+      return {
+        putKeycaps: replacePositionMatchesSize,
+      };
     },
   },
 });
