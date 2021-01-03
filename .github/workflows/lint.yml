@@ -1,0 +1,20 @@
+name: lint
+on: [pull_request]
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: lint eslint
+        run: yarn lint:eslint
+
+      - name: lint prettier
+        run: yarn lint:prettier
+
+
