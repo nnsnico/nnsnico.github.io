@@ -6,7 +6,9 @@
     "build": "webpack",
     "watch": "webpack serve",
     "test": "jest",
-    "lint": "npx eslint . && npx prettier --check ."
+    "lint:eslint": "npx eslint './**/*.{ts,tsx}'",
+    "lint:prettier": "npx prettier --check './**/*.{ts,tsx}'",
+    "lint:all": "yarn check:lint && yarn check:format"
   },
   "eslintConfig": {
     "extends": [
@@ -50,7 +52,6 @@
     "cross-env": "^7.0.3",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^7.0.0",
-    "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "fork-ts-checker-webpack-plugin": "^6.0.6",
