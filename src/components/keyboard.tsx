@@ -1,3 +1,4 @@
+import { PayloadAction } from '@reduxjs/toolkit';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import React from 'react';
@@ -5,6 +6,7 @@ import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { insertKeyCap, updateKeyCapPosition } from '../reducer';
+import { KeyboardPayload } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
 import KeyCap from './keycap';
 
@@ -31,7 +33,10 @@ const KeyBoard: React.FC = () => {
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
 
-      const handleActionByFlag = (position: XYCoord, usedKeysLength: number) =>
+      const handleActionByFlag = (
+        position: XYCoord,
+        usedKeysLength: number
+      ): PayloadAction<KeyboardPayload> =>
         pipe(
           O.bindTo('_')(item.isDragedFromTab),
           O.map(() =>

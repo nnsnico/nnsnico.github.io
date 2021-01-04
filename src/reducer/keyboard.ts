@@ -36,11 +36,12 @@ const keyboardSlice = createSlice({
   name: 'keyboard',
   initialState: { putKeycaps: [] } as KeyboardState,
   reducers: {
+    // insert new keycap in keyboard
     insertKeyCap: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
-      const createInSameSizeKey = pipe(
+      const createInSameSizeKey: Keycap[] = pipe(
         state.putKeycaps,
         A.map((keycap) =>
           keycap.size === action.payload.size
@@ -52,7 +53,7 @@ const keyboardSlice = createSlice({
         )
       );
 
-      const createNewKeys = pipe(
+      const createNewKeys: Keycap[] = pipe(
         A.of(state),
         A.chain((state) =>
           A.snoc(state.putKeycaps, {
@@ -68,6 +69,7 @@ const keyboardSlice = createSlice({
         ? { putKeycaps: createNewKeys }
         : { putKeycaps: createInSameSizeKey };
     },
+    // update keycap position
     updateKeyCapPosition: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
