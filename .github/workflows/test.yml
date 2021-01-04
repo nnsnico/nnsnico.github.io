@@ -1,0 +1,15 @@
+name: jest
+on: [pull_request]
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: test by jest
+        run: yarn test
