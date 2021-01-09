@@ -1,10 +1,13 @@
+import { PayloadAction } from '@reduxjs/toolkit';
+import * as O from 'fp-ts/Option';
+import { pipe } from 'fp-ts/function';
 import React from 'react';
-import { useDrop } from 'react-dnd';
+import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeyCap, updateKeyCapPosition, RootState } from '../reducer';
+import { insertKeyCap, updateKeyCapPosition } from '../reducer';
 import { KeyboardPayload } from '../reducer/keyboard';
-import { KeycapSize } from '../types';
+import { DragItem, KeycapSize, RootState } from '../types';
 import KeyCap from './keycap';
 
 const wrappedDivStyle: React.CSSProperties = {
@@ -22,63 +25,79 @@ const keyboardStyle: React.CSSProperties = {
 };
 
 const KeyBoard: React.FC = () => {
-  // const { draggingKeycapId } = useSelector((state: RootState) => state.keyCap);
   const { putKeycaps } = useSelector((state: RootState) => state.keyboard);
   const dispatch = useDispatch();
   const [, drop] = useDrop({
     accept: 'keycap',
     canDrop: () => true,
     drop: (_, monitor) => {
-      const offset = monitor.getClientOffset();
-      const size = monitor.getItem().size;
-      if (offset != null) {
-        const usedSizeSet = putKeycaps.map((v) => v.size);
-        // キーボード画面上に同じ大きさのキーキャップがあればidにsuffixをつけて新しく生成。さもなければsuffixなしで生成。
-        if (usedSizeSet.includes(size)) {
-          const usedKeysMatchesSize = putKeycaps
-            .filter((v) => v.size === size)
-            .flatMap((v) => v.usedKeys);
-          // ドラッグしたキーキャップがタブからドラッグしていれば新しく生成。さもなければidをチェックして座標を更新するコンポーネントを選択
-          if (monitor.getItem().isDragedFromTab != null) {
-            dispatch(
-              insertKeyCap({
-                size,
-                usedKey: {
-                  id: size + '_' + usedKeysMatchesSize.length,
-                  position: {
-                    x: offset.x,
-                    y: offset.y,
-                  },
-                },
-              })
-            );
-          } else {
-            const keycap: KeyboardPayload = {
-              size: monitor.getItem().size,
-              usedKey: {
-                id: monitor.getItem()._key,
-                position: {
-                  x: offset.x,
-                  y: offset.y,
-                },
-              },
-            };
-            dispatch(updateKeyCapPosition(keycap));
-          }
-        } else {
-          dispatch(
+      const item = monitor.getItem() as DragItem;
+
+      const handleActionByFlag = (
+        position: XYCoord,
+        usedKeysLength: number
+      ): PayloadAction<KeyboardPayload> =>
+        pipe(
+          O.bindTo('_')(item.isDragedFromTab),
+          O.map(() =>
             insertKeyCap({
-              size,
+              size: item.size,
               usedKey: {
-                id: size,
-                position: {
-                  x: offset.x,
-                  y: offset.y,
-                },
+                id: item._key + '_' + usedKeysLength,
+                position,
               },
             })
-          );
-        }
+          ),
+          O.getOrElse(() =>
+            updateKeyCapPosition({
+              size: item.size,
+              usedKey: {
+                id: item._key,
+                position,
+              },
+            })
+          )
+        );
+
+      const action = pipe(
+        O.bindTo('position')(O.fromNullable(monitor.getClientOffset())),
+        O.bind('usedKeysLength', () =>
+          pipe(
+            O.of(putKeycaps.filter((v) => v.size === item.size)),
+            O.map((keycaps) =>
+              keycaps.length !== 0
+                ? O.some(keycaps.flatMap((v) => v.usedKeys).length)
+                : O.none
+            )
+          )
+        ),
+        O.bind('action', (bind) =>
+          pipe(
+            O.bindTo('length')(bind.usedKeysLength),
+            O.bind('action', (v) =>
+              O.some(handleActionByFlag(bind.position, v.length))
+            ),
+            O.map((v) => O.some(v.action)),
+            O.getOrElse(() =>
+              O.some(
+                insertKeyCap({
+                  size: item.size,
+                  usedKey: {
+                    id: item._key,
+                    position: bind.position,
+                  },
+                })
+              )
+            )
+          )
+        ),
+        O.map((bind) => bind.action)
+      );
+
+      if (O.isSome(action)) {
+        dispatch(action.value);
+      } else {
+        console.error('action is none');
       }
     },
   });

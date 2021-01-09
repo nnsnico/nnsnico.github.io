@@ -1,7 +1,8 @@
+import { fromNullable } from 'fp-ts/es6/Option';
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
-import { KeycapSize } from '../types';
+import { DragItem, KeycapSize } from '../types';
 
 interface KeyCapProps {
   _key: string;
@@ -13,9 +14,9 @@ interface KeyCapProps {
 const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
   const _key = props._key;
   const size = props.size.toString();
-  const isDragedFromTab = props.isDragedFromTab;
+  const isDragedFromTab = fromNullable(props.isDragedFromTab);
   const [{ opacity }, dragRef] = useDrag({
-    item: { type: 'keycap', _key, size, isDragedFromTab },
+    item: { type: 'keycap', _key, size, isDragedFromTab } as DragItem,
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0 : 1,
     }),
