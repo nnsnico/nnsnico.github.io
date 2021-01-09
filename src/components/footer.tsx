@@ -5,6 +5,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Box,
 } from '@chakra-ui/react';
 import React from 'react';
 
@@ -23,16 +24,18 @@ const Footer: React.FC = () => {
       padding="1.5rem"
       bg="white"
       style={{ zIndex: 1000 }}>
-      <Tabs>
+      <Tabs w="100%">
         <TabList>
           <Tab>キーキャップ</Tab>
           <Tab>PCB(基盤)</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
-            <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
-              {createKeyCaps()}
-            </Flex>
+            <Box overflowX="scroll">
+              <Flex justify="space-between" padding="1.5rem">
+                {createKeyCaps()}
+              </Flex>
+            </Box>
           </TabPanel>
           <TabPanel>
             <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
