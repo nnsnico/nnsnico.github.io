@@ -23,13 +23,16 @@ const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
   });
 
   return (
-    <div ref={dragRef}>
+    <div
+      ref={dragRef}
+      style={{
+        ...props.styles,
+        opacity,
+        zIndex: 1,
+      }}>
       <img
         style={{
-          ...props.styles,
-          opacity,
           width: '200px',
-          zIndex: 1,
           maxWidth: 'none',
         }}
         src={
