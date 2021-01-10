@@ -19,6 +19,7 @@ interface Keycap {
 interface UsedKey {
   id: string;
   position: Position;
+  selected: boolean;
 }
 
 interface Position {
@@ -34,7 +35,7 @@ export interface KeyboardPayload {
 
 const keyboardSlice = createSlice({
   name: 'keyboard',
-  initialState: { putKeycaps: [] } as KeyboardState,
+  initialState: { putKeycaps: [], selectedKeycapIds: [] } as KeyboardState,
   reducers: {
     // insert new keycap in keyboard
     insertKeyCap: (
@@ -66,11 +67,40 @@ const keyboardSlice = createSlice({
       return A.isEmpty(
         state.putKeycaps.filter((v) => v.size === action.payload.size)
       )
-        ? { putKeycaps: createNewKeys }
-        : { putKeycaps: createInSameSizeKey };
+        ? {
+            putKeycaps: createNewKeys,
+          }
+        : {
+            putKeycaps: createInSameSizeKey,
+          };
     },
-    // update keycap position
-    updateKeyCapPosition: (
+
+    //選択されたキーキャップをkeyboardから削除する
+    removeKeyCap: (
+      state: KeyboardState,
+      action: PayloadAction<KeyboardPayload>
+    ): KeyboardState => {
+      const selectedKeycapsFilterById: Keycap[] = pipe(
+        state.putKeycaps,
+        A.map((keycap) =>
+          keycap.size === action.payload.size
+            ? {
+                size: action.payload.size,
+                usedKeys: pipe(
+                  keycap.usedKeys,
+                  A.filter((usedKey) => usedKey.id != action.payload.usedKey.id)
+                ),
+              }
+            : keycap
+        )
+      );
+
+      return {
+        putKeycaps: selectedKeycapsFilterById,
+      };
+    },
+    // update keycap
+    updateKeyCap: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
@@ -99,5 +129,4 @@ const keyboardSlice = createSlice({
     },
   },
 });
-
 export default keyboardSlice;
