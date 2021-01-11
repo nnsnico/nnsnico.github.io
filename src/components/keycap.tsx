@@ -32,18 +32,16 @@ const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
         opacity,
         zIndex: 1,
       }}>
-      <div>
-        <img
-          style={{
-            width: '200px',
-            maxWidth: 'none',
-          }}
-          src={
-            'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
-          }
-        />
-        <span>{_key}</span>
-      </div>
+      <img
+        style={{
+          width: '200px',
+          maxWidth: 'none',
+        }}
+        src={
+          'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
+        }
+      />
+      <span>{_key}</span>
     </div>
   );
 };
