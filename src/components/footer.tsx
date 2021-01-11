@@ -26,8 +26,8 @@ const Footer: React.FC = () => {
       style={{ zIndex: 1000 }}>
       <Tabs w="100%">
         <TabList>
-          <Tab>キーキャップ</Tab>
           <Tab>PCB(基盤)</Tab>
+          <Tab>キーキャップ</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
