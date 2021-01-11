@@ -183,7 +183,7 @@ describe('keyboardSlice', function () {
     });
 
     describe('#removeKeyCap', function () {
-      it('should insert to `state#putKeycaps` when state is empty', function () {
+      it('should remove `state#putKeycaps#usedKey`', function () {
         const payloadFixture: { type: string; payload: KeyboardPayload } = {
           type: removeKeyCap.type,
           payload: {
@@ -231,7 +231,7 @@ describe('keyboardSlice', function () {
         ).toEqual(expected);
       });
 
-      it('should insert to `state#putKeycaps` when state is empty', function () {
+      it('should not remove `state#putKeycaps#usedKey`', function () {
         const payloadFixture: { type: string; payload: KeyboardPayload } = {
           type: removeKeyCap.type,
           payload: {
@@ -256,8 +256,8 @@ describe('keyboardSlice', function () {
       });
     });
 
-    describe('#updateKeyCapPosition', function () {
-      it('should update `state#putKeycaps#usedKeys#position` when `usedKey#id` of payload is equal to `state#putKeycaps#usedKeys#id`', function () {
+    describe('#updateKeyCap', function () {
+      it('should update `state#putKeycaps#usedKeys` when `usedKey#id` of payload is equal to `state#putKeycaps#usedKeys#id`', function () {
         const payloadFixture: { type: string; payload: KeyboardPayload } = {
           type: updateKeyCap.type,
           payload: {
