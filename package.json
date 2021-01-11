@@ -8,7 +8,7 @@
     "test": "jest",
     "lint:eslint": "npx eslint './**/*.{ts,tsx}'",
     "lint:prettier": "npx prettier --check './**/*.{ts,tsx}'",
-    "lint:all": "yarn check:lint && yarn check:format"
+    "lint:all": "yarn lint:eslint && yarn lint:prettier"
   },
   "eslintConfig": {
     "extends": [
