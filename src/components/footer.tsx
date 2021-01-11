@@ -49,11 +49,8 @@ const Footer: React.FC = () => {
 };
 
 function createKeyCaps(): JSX.Element[] {
-  const caps = [];
-  const ids = keycapSize;
-  for (const i of ids) {
-    caps.push(<KeyCap key={i.toString()} _key={i} size={i} isDragedFromTab />);
-  }
-  return caps;
+  return keycapSize.map((cap, index) => (
+    <KeyCap key={index.toString()} _key={cap} size={cap} isDragedFromTab />
+  ));
 }
 export default Footer;
