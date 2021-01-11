@@ -14,16 +14,16 @@ interface KeyCapProps {
   keycapStyles?: React.CSSProperties;
 }
 
-const RemovableKeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
-  return (
-    <div style={props.keycapStyles}>
-      <KeyCap _key={props.capId} size={props.size} onClick={props.onSelected} />
-      <RemoveButton
-        styles={{ visibility: props.selected ? 'visible' : 'hidden' }}
-        onClick={props.onClickDelete}
-      />
-    </div>
-  );
-};
-
+const RemovableKeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => (
+  <KeyCap
+    styles={props.keycapStyles}
+    _key={props.capId}
+    size={props.size}
+    onClick={props.onSelected}>
+    <RemoveButton
+      styles={{ visibility: props.selected ? 'visible' : 'hidden' }}
+      onClick={props.onClickDelete}
+    />
+  </KeyCap>
+);
 export default RemovableKeyCap;

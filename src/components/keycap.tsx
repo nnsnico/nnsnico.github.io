@@ -10,6 +10,7 @@ interface KeyCapProps {
   styles?: React.CSSProperties;
   isDragedFromTab?: boolean;
   onClick?: () => void;
+  children?: React.ReactNode;
 }
 
 const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
@@ -42,6 +43,7 @@ const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
         }
       />
       <span>{_key}</span>
+      <span>{props.children}</span>
     </div>
   );
 };
