@@ -1,4 +1,4 @@
-import { insertKeyCap, updateKeyCap } from '.';
+import { insertKeyCap, removeKeyCap, updateKeyCap } from '.';
 import keyboardSlice, { KeyboardPayload, KeyboardState } from './keyboard';
 
 const stateFixture: KeyboardState = {
@@ -179,6 +179,80 @@ describe('keyboardSlice', function () {
         expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
           expected
         );
+      });
+    });
+
+    describe('#removeKeyCap', function () {
+      it('should insert to `state#putKeycaps` when state is empty', function () {
+        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+          type: removeKeyCap.type,
+          payload: {
+            size: '2.25U',
+            usedKey: {
+              id: '2.25U',
+              position: {
+                x: 0,
+                y: 0,
+              },
+              selected: false,
+            },
+          },
+        };
+        const expected: KeyboardState = {
+          putKeycaps: [
+            {
+              size: '2.25U',
+              usedKeys: [],
+            },
+          ],
+        };
+
+        expect(
+          keyboardSlice.reducer(
+            {
+              putKeycaps: [
+                {
+                  size: '2.25U',
+                  usedKeys: [
+                    {
+                      id: '2.25U',
+                      position: {
+                        x: 0,
+                        y: 0,
+                      },
+                      selected: false,
+                    },
+                  ],
+                },
+              ],
+            },
+            payloadFixture
+          )
+        ).toEqual(expected);
+      });
+
+      it('should insert to `state#putKeycaps` when state is empty', function () {
+        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+          type: removeKeyCap.type,
+          payload: {
+            size: '2.25U',
+            usedKey: {
+              id: '2.25U',
+              position: {
+                x: 0,
+                y: 0,
+              },
+              selected: false,
+            },
+          },
+        };
+        const expected: KeyboardState = {
+          putKeycaps: [],
+        };
+
+        expect(
+          keyboardSlice.reducer({ putKeycaps: [] }, payloadFixture)
+        ).toEqual(expected);
       });
     });
 
