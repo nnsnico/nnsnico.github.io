@@ -62,7 +62,7 @@ const KeyBoard: React.FC = () => {
         );
 
       const action = pipe(
-        O.bindTo('position')(O.fromNullable(monitor.getClientOffset())),
+        O.bindTo('position')(O.fromNullable(monitor.getSourceClientOffset())),
         O.bind('usedKeysLength', () =>
           pipe(
             O.of(putKeycaps.filter((v) => v.size === item.size)),
