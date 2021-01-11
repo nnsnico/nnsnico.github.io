@@ -1,4 +1,4 @@
-import { insertKeyCap, updateKeyCapPosition } from '.';
+import { insertKeyCap, removeKeyCap, updateKeyCap } from '.';
 import keyboardSlice, { KeyboardPayload, KeyboardState } from './keyboard';
 
 const stateFixture: KeyboardState = {
@@ -12,6 +12,7 @@ const stateFixture: KeyboardState = {
             x: 212,
             y: 238,
           },
+          selected: false,
         },
         {
           id: '2U_1',
@@ -19,6 +20,7 @@ const stateFixture: KeyboardState = {
             x: 38,
             y: 382,
           },
+          selected: false,
         },
       ],
     },
@@ -39,6 +41,7 @@ describe('keyboardSlice', function () {
                 x: 0,
                 y: 0,
               },
+              selected: false,
             },
           },
         };
@@ -53,6 +56,7 @@ describe('keyboardSlice', function () {
                     x: 0,
                     y: 0,
                   },
+                  selected: false,
                 },
               ],
             },
@@ -75,6 +79,7 @@ describe('keyboardSlice', function () {
                 x: 0,
                 y: 0,
               },
+              selected: false,
             },
           },
         };
@@ -89,6 +94,7 @@ describe('keyboardSlice', function () {
                     x: 212,
                     y: 238,
                   },
+                  selected: false,
                 },
                 {
                   id: '2U_1',
@@ -96,6 +102,7 @@ describe('keyboardSlice', function () {
                     x: 38,
                     y: 382,
                   },
+                  selected: false,
                 },
               ],
             },
@@ -108,6 +115,7 @@ describe('keyboardSlice', function () {
                     x: 0,
                     y: 0,
                   },
+                  selected: false,
                 },
               ],
             },
@@ -130,6 +138,7 @@ describe('keyboardSlice', function () {
                 x: 0,
                 y: 0,
               },
+              selected: false,
             },
           },
         };
@@ -144,6 +153,7 @@ describe('keyboardSlice', function () {
                     x: 212,
                     y: 238,
                   },
+                  selected: false,
                 },
                 {
                   id: '2U_1',
@@ -151,6 +161,7 @@ describe('keyboardSlice', function () {
                     x: 38,
                     y: 382,
                   },
+                  selected: false,
                 },
                 {
                   id: '2U_2',
@@ -158,6 +169,7 @@ describe('keyboardSlice', function () {
                     x: 0,
                     y: 0,
                   },
+                  selected: false,
                 },
               ],
             },
@@ -170,10 +182,84 @@ describe('keyboardSlice', function () {
       });
     });
 
-    describe('#updateKeyCapPosition', function () {
-      it('should update `state#putKeycaps#usedKeys#position` when `usedKey#id` of payload is equal to `state#putKeycaps#usedKeys#id`', function () {
+    describe('#removeKeyCap', function () {
+      it('should remove `state#putKeycaps#usedKey`', function () {
         const payloadFixture: { type: string; payload: KeyboardPayload } = {
-          type: updateKeyCapPosition.type,
+          type: removeKeyCap.type,
+          payload: {
+            size: '2.25U',
+            usedKey: {
+              id: '2.25U',
+              position: {
+                x: 0,
+                y: 0,
+              },
+              selected: false,
+            },
+          },
+        };
+        const expected: KeyboardState = {
+          putKeycaps: [
+            {
+              size: '2.25U',
+              usedKeys: [],
+            },
+          ],
+        };
+
+        expect(
+          keyboardSlice.reducer(
+            {
+              putKeycaps: [
+                {
+                  size: '2.25U',
+                  usedKeys: [
+                    {
+                      id: '2.25U',
+                      position: {
+                        x: 0,
+                        y: 0,
+                      },
+                      selected: false,
+                    },
+                  ],
+                },
+              ],
+            },
+            payloadFixture
+          )
+        ).toEqual(expected);
+      });
+
+      it('should not remove `state#putKeycaps#usedKey`', function () {
+        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+          type: removeKeyCap.type,
+          payload: {
+            size: '2.25U',
+            usedKey: {
+              id: '2.25U',
+              position: {
+                x: 0,
+                y: 0,
+              },
+              selected: false,
+            },
+          },
+        };
+        const expected: KeyboardState = {
+          putKeycaps: [],
+        };
+
+        expect(
+          keyboardSlice.reducer({ putKeycaps: [] }, payloadFixture)
+        ).toEqual(expected);
+      });
+    });
+
+    describe('#updateKeyCap', function () {
+      it('should update `state#putKeycaps#usedKeys` when `usedKey#id` of payload is equal to `state#putKeycaps#usedKeys#id`', function () {
+        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+          type: updateKeyCap.type,
           payload: {
             size: '2U',
             usedKey: {
@@ -182,6 +268,7 @@ describe('keyboardSlice', function () {
                 x: 123,
                 y: 456,
               },
+              selected: false,
             },
           },
         };
@@ -196,6 +283,7 @@ describe('keyboardSlice', function () {
                     x: 212,
                     y: 238,
                   },
+                  selected: false,
                 },
                 {
                   id: '2U_1',
@@ -203,6 +291,7 @@ describe('keyboardSlice', function () {
                     x: 123,
                     y: 456,
                   },
+                  selected: false,
                 },
               ],
             },

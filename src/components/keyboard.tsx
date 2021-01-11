@@ -5,10 +5,10 @@ import React from 'react';
 import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeyCap, updateKeyCapPosition } from '../reducer';
+import { insertKeyCap, removeKeyCap, updateKeyCap } from '../reducer';
 import { KeyboardPayload } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
-import KeyCap from './keycap';
+import RemovableKeyCap from './molecules/removableKeycap';
 
 const wrappedDivStyle: React.CSSProperties = {
   position: 'absolute',
@@ -45,15 +45,17 @@ const KeyBoard: React.FC = () => {
               usedKey: {
                 id: item._key + '_' + usedKeysLength,
                 position,
+                selected: false,
               },
             })
           ),
           O.getOrElse(() =>
-            updateKeyCapPosition({
+            updateKeyCap({
               size: item.size,
               usedKey: {
                 id: item._key,
                 position,
+                selected: false,
               },
             })
           )
@@ -85,6 +87,7 @@ const KeyBoard: React.FC = () => {
                   usedKey: {
                     id: item._key,
                     position: bind.position,
+                    selected: false,
                   },
                 })
               )
@@ -106,9 +109,42 @@ const KeyBoard: React.FC = () => {
     <div style={wrappedDivStyle}>
       <div style={keyboardStyle} ref={drop}>
         {putKeycaps.map((keycap) =>
-          keycap.usedKeys.map((key) =>
-            renderKeyCap(key.id, keycap.size, key.position.x, key.position.y)
-          )
+          keycap.usedKeys.map((key) => {
+            return (
+              <div key={key.id}>
+                {renderKeyCap(
+                  key.id,
+                  keycap.size,
+                  key.position.x,
+                  key.position.y,
+                  key.selected,
+                  () =>
+                    dispatch(
+                      removeKeyCap({
+                        size: keycap.size,
+                        usedKey: {
+                          id: key.id,
+                          position: key.position,
+                          selected: true,
+                        },
+                      })
+                    ),
+                  () => {
+                    dispatch(
+                      updateKeyCap({
+                        size: keycap.size,
+                        usedKey: {
+                          id: key.id,
+                          position: key.position,
+                          selected: !key.selected,
+                        },
+                      })
+                    );
+                  }
+                )}
+              </div>
+            );
+          })
         )}
       </div>
     </div>
@@ -119,14 +155,21 @@ function renderKeyCap(
   capId: string,
   size: KeycapSize,
   x: number,
-  y: number
+  y: number,
+  selected: boolean,
+  onClickDelete: () => void,
+  onSelected: () => void
 ): JSX.Element {
   return (
-    <KeyCap
+    <RemovableKeyCap
       key={capId}
       _key={capId}
       size={size}
-      styles={{ position: 'fixed', top: y, left: x }}
+      keycapStyles={{ position: 'fixed', top: y, left: x }}
+      onClickDelete={onClickDelete}
+      onSelected={onSelected}
+      capId={capId}
+      selected={selected}
     />
   );
 }
