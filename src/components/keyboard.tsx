@@ -109,42 +109,40 @@ const KeyBoard: React.FC = () => {
     <div style={wrappedDivStyle}>
       <div style={keyboardStyle} ref={drop}>
         {putKeycaps.map((keycap) =>
-          keycap.usedKeys.map((key) => {
-            return (
-              <div key={key.id}>
-                {renderKeyCap(
-                  key.id,
-                  keycap.size,
-                  key.position.x,
-                  key.position.y,
-                  key.selected,
-                  () =>
-                    dispatch(
-                      removeKeyCap({
-                        size: keycap.size,
-                        usedKey: {
-                          id: key.id,
-                          position: key.position,
-                          selected: true,
-                        },
-                      })
-                    ),
-                  () => {
-                    dispatch(
-                      updateKeyCap({
-                        size: keycap.size,
-                        usedKey: {
-                          id: key.id,
-                          position: key.position,
-                          selected: !key.selected,
-                        },
-                      })
-                    );
-                  }
-                )}
-              </div>
-            );
-          })
+          keycap.usedKeys.map((key) => (
+            <>
+              {renderKeyCap(
+                key.id,
+                keycap.size,
+                key.position.x,
+                key.position.y,
+                key.selected,
+                () =>
+                  dispatch(
+                    removeKeyCap({
+                      size: keycap.size,
+                      usedKey: {
+                        id: key.id,
+                        position: key.position,
+                        selected: true,
+                      },
+                    })
+                  ),
+                () => {
+                  dispatch(
+                    updateKeyCap({
+                      size: keycap.size,
+                      usedKey: {
+                        id: key.id,
+                        position: key.position,
+                        selected: !key.selected,
+                      },
+                    })
+                  );
+                }
+              )}
+            </>
+          ))
         )}
       </div>
     </div>
