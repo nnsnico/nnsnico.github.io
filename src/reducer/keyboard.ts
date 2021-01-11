@@ -22,7 +22,7 @@ interface UsedKey {
   selected: boolean;
 }
 
-interface Position {
+export interface Position {
   x: number;
   y: number;
 }

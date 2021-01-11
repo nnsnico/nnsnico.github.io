@@ -5,7 +5,7 @@ import React from 'react';
 import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeycap, removeKeycap, updateKeycap } from '../reducer';
+import { insertKeycap, updateKeycap } from '../reducer';
 import { KeyboardPayload } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
 import RemovableKeycap from './molecules/removableKeycap';
@@ -114,30 +114,7 @@ const KeyBoard: React.FC = () => {
             keycap.size,
             key.position.x,
             key.position.y,
-            key.selected,
-            () =>
-              dispatch(
-                removeKeycap({
-                  size: keycap.size,
-                  usedKey: {
-                    id: key.id,
-                    position: key.position,
-                    selected: true,
-                  },
-                })
-              ),
-            () => {
-              dispatch(
-                updateKeycap({
-                  size: keycap.size,
-                  usedKey: {
-                    id: key.id,
-                    position: key.position,
-                    selected: !key.selected,
-                  },
-                })
-              );
-            }
+            key.selected
           )
         )
       )}
@@ -150,9 +127,7 @@ function renderKeycap(
   size: KeycapSize,
   x: number,
   y: number,
-  selected: boolean,
-  onClickDelete: () => void,
-  onSelected: () => void
+  selected: boolean
 ): JSX.Element {
   return (
     <RemovableKeycap
@@ -160,10 +135,8 @@ function renderKeycap(
       _key={capId}
       size={size}
       keycapStyles={{ position: 'fixed', top: y, left: x }}
-      onClickDelete={onClickDelete}
-      onSelected={onSelected}
-      capId={capId}
       selected={selected}
+      position={{ x, y }}
     />
   );
 }
