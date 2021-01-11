@@ -10,7 +10,7 @@ import {
 import React from 'react';
 
 import { keycapSize } from '../types';
-import KeyCap from './keycap';
+import Keycap from './keycap';
 
 const Footer: React.FC = () => {
   return (
@@ -33,13 +33,13 @@ const Footer: React.FC = () => {
           <TabPanel>
             <Box overflowX="scroll">
               <Flex justify="space-between" padding="1.5rem">
-                {createKeyCaps()}
+                {createKeycaps()}
               </Flex>
             </Box>
           </TabPanel>
           <TabPanel>
             <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
-              {createKeyCaps()}
+              {createKeycaps()}
             </Flex>
           </TabPanel>
         </TabPanels>
@@ -48,9 +48,9 @@ const Footer: React.FC = () => {
   );
 };
 
-function createKeyCaps(): JSX.Element[] {
+function createKeycaps(): JSX.Element[] {
   return keycapSize.map((cap, index) => (
-    <KeyCap key={index.toString()} _key={cap} size={cap} isDragedFromTab />
+    <Keycap key={index.toString()} _key={cap} size={cap} isDragedFromTab />
   ));
 }
 export default Footer;

@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 
 import { DragItem, KeycapSize } from '../types';
 
-interface KeyCapProps {
+interface KeycapProps {
   _key: string;
   size: KeycapSize;
   styles?: React.CSSProperties;
@@ -13,7 +13,7 @@ interface KeyCapProps {
   children?: React.ReactNode;
 }
 
-const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
+const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
   const _key = props._key;
   const size = props.size.toString();
   const isDragedFromTab = fromNullable(props.isDragedFromTab);
@@ -48,4 +48,4 @@ const KeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => {
   );
 };
 
-export default KeyCap;
+export default Keycap;

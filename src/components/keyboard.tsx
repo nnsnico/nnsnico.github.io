@@ -5,10 +5,10 @@ import React from 'react';
 import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeyCap, removeKeyCap, updateKeyCap } from '../reducer';
+import { insertKeycap, removeKeycap, updateKeycap } from '../reducer';
 import { KeyboardPayload } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
-import RemovableKeyCap from './molecules/removableKeycap';
+import RemovableKeycap from './molecules/removableKeycap';
 
 const wrappedDivStyle: React.CSSProperties = {
   position: 'absolute',
@@ -40,7 +40,7 @@ const KeyBoard: React.FC = () => {
         pipe(
           O.bindTo('_')(item.isDragedFromTab),
           O.map(() =>
-            insertKeyCap({
+            insertKeycap({
               size: item.size,
               usedKey: {
                 id: item._key + '_' + usedKeysLength,
@@ -50,7 +50,7 @@ const KeyBoard: React.FC = () => {
             })
           ),
           O.getOrElse(() =>
-            updateKeyCap({
+            updateKeycap({
               size: item.size,
               usedKey: {
                 id: item._key,
@@ -82,7 +82,7 @@ const KeyBoard: React.FC = () => {
             O.map((v) => O.some(v.action)),
             O.getOrElse(() =>
               O.some(
-                insertKeyCap({
+                insertKeycap({
                   size: item.size,
                   usedKey: {
                     id: item._key,
@@ -109,7 +109,7 @@ const KeyBoard: React.FC = () => {
     <div style={{ ...wrappedDivStyle, ...keyboardStyle }} ref={drop}>
       {putKeycaps.flatMap((keycap) =>
         keycap.usedKeys.map((key) =>
-          renderKeyCap(
+          renderKeycap(
             key.id,
             keycap.size,
             key.position.x,
@@ -117,7 +117,7 @@ const KeyBoard: React.FC = () => {
             key.selected,
             () =>
               dispatch(
-                removeKeyCap({
+                removeKeycap({
                   size: keycap.size,
                   usedKey: {
                     id: key.id,
@@ -128,7 +128,7 @@ const KeyBoard: React.FC = () => {
               ),
             () => {
               dispatch(
-                updateKeyCap({
+                updateKeycap({
                   size: keycap.size,
                   usedKey: {
                     id: key.id,
@@ -145,7 +145,7 @@ const KeyBoard: React.FC = () => {
   );
 };
 
-function renderKeyCap(
+function renderKeycap(
   capId: string,
   size: KeycapSize,
   x: number,
@@ -155,7 +155,7 @@ function renderKeyCap(
   onSelected: () => void
 ): JSX.Element {
   return (
-    <RemovableKeyCap
+    <RemovableKeycap
       key={capId}
       _key={capId}
       size={size}

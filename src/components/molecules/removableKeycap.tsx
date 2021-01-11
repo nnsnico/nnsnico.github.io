@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { KeycapSize } from '../../types';
-import KeyCap from '../keycap';
+import Keycap from '../keycap';
 import RemoveButton from '../removeButton';
 
-interface KeyCapProps {
+interface RemovableKeycapProps {
   capId: string;
   size: KeycapSize;
   _key: string;
@@ -14,8 +14,10 @@ interface KeyCapProps {
   keycapStyles?: React.CSSProperties;
 }
 
-const RemovableKeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => (
-  <KeyCap
+const RemovableKeycap: React.FC<RemovableKeycapProps> = (
+  props: RemovableKeycapProps
+) => (
+  <Keycap
     styles={props.keycapStyles}
     _key={props.capId}
     size={props.size}
@@ -24,6 +26,6 @@ const RemovableKeyCap: React.FC<KeyCapProps> = (props: KeyCapProps) => (
       styles={{ visibility: props.selected ? 'visible' : 'hidden' }}
       onClick={props.onClickDelete}
     />
-  </KeyCap>
+  </Keycap>
 );
-export default RemovableKeyCap;
+export default RemovableKeycap;

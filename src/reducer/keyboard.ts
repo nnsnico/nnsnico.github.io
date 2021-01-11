@@ -38,7 +38,7 @@ const keyboardSlice = createSlice({
   initialState: { putKeycaps: [], selectedKeycapIds: [] } as KeyboardState,
   reducers: {
     // insert new keycap in keyboard
-    insertKeyCap: (
+    insertKeycap: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
@@ -76,7 +76,7 @@ const keyboardSlice = createSlice({
     },
 
     //選択されたキーキャップをkeyboardから削除する
-    removeKeyCap: (
+    removeKeycap: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
@@ -100,7 +100,7 @@ const keyboardSlice = createSlice({
       };
     },
     // update keycap
-    updateKeyCap: (
+    updateKeycap: (
       state: KeyboardState,
       action: PayloadAction<KeyboardPayload>
     ): KeyboardState => {
