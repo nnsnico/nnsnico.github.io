@@ -42,6 +42,7 @@ const KeyBoard: React.FC = () => {
           O.map(() =>
             insertKeycap({
               size: item.size,
+              lastUpdateLength: usedKeysLength + 1,
               usedKey: {
                 id: item._key + '_' + usedKeysLength,
                 position,
@@ -52,6 +53,7 @@ const KeyBoard: React.FC = () => {
           O.getOrElse(() =>
             updateKeycap({
               size: item.size,
+              lastUpdateLength: usedKeysLength,
               usedKey: {
                 id: item._key,
                 position,
@@ -60,7 +62,6 @@ const KeyBoard: React.FC = () => {
             })
           )
         );
-
       const action = pipe(
         O.bindTo('position')(O.fromNullable(monitor.getSourceClientOffset())),
         O.bind('usedKeysLength', () =>
@@ -68,8 +69,8 @@ const KeyBoard: React.FC = () => {
             O.of(putKeycaps.filter((v) => v.size === item.size)),
             O.map((keycaps) =>
               keycaps.length !== 0
-                ? O.some(keycaps.flatMap((v) => v.usedKeys).length)
-                : O.none
+                ? O.some(keycaps.map((v) => v.lastUpdateLength)[0]) // TODO: 非常にダサい
+                : O.some(0)
             )
           )
         ),
@@ -81,15 +82,19 @@ const KeyBoard: React.FC = () => {
             ),
             O.map((v) => O.some(v.action)),
             O.getOrElse(() =>
-              O.some(
-                insertKeycap({
-                  size: item.size,
-                  usedKey: {
-                    id: item._key,
-                    position: bind.position,
-                    selected: false,
-                  },
-                })
+              pipe(
+                bind.usedKeysLength,
+                O.map((lastUpdateLength) =>
+                  insertKeycap({
+                    size: item.size,
+                    lastUpdateLength,
+                    usedKey: {
+                      id: item._key,
+                      position: bind.position,
+                      selected: false,
+                    },
+                  })
+                )
               )
             )
           )
