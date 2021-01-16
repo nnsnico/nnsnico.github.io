@@ -6,7 +6,6 @@ import React from 'react';
 import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fold } from '../ext/boolean';
 import { insertKeycap, updateKeycap } from '../reducer';
 import { KeyboardPayload } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
@@ -68,11 +67,10 @@ const KeyBoard: React.FC = () => {
         O.bind('usedKeysLength', () =>
           pipe(
             O.of(putKeycaps.filter((v) => v.size === item.size)),
-            O.chain((keycaps) =>
-              fold(
-                keycaps.length !== 0,
+            O.map((keycaps) =>
+              pipe(
                 A.head(keycaps.map((v) => v.lastUpdateLength)),
-                O.some(0)
+                O.getOrElse(() => 0)
               )
             )
           )
