@@ -5,6 +5,7 @@ const stateFixture: KeyboardState = {
   putKeycaps: [
     {
       size: '2U',
+      lastUpdateLength: 2,
       usedKeys: [
         {
           id: '2U',
@@ -34,6 +35,7 @@ describe('keyboardSlice', function () {
         const payloadFixture: { type: string; payload: KeyboardPayload } = {
           type: insertKeycap.type,
           payload: {
+            lastUpdateLength: 1,
             size: '2.25U',
             usedKey: {
               id: '2.25U',
@@ -49,6 +51,7 @@ describe('keyboardSlice', function () {
           putKeycaps: [
             {
               size: '2.25U',
+              lastUpdateLength: 1,
               usedKeys: [
                 {
                   id: '2.25U',
@@ -73,6 +76,7 @@ describe('keyboardSlice', function () {
           type: insertKeycap.type,
           payload: {
             size: '2.25U',
+            lastUpdateLength: 1,
             usedKey: {
               id: '2.25U',
               position: {
@@ -87,6 +91,7 @@ describe('keyboardSlice', function () {
           putKeycaps: [
             {
               size: '2U',
+              lastUpdateLength: 2,
               usedKeys: [
                 {
                   id: '2U',
@@ -108,6 +113,7 @@ describe('keyboardSlice', function () {
             },
             {
               size: '2.25U',
+              lastUpdateLength: 1,
               usedKeys: [
                 {
                   id: '2.25U',
@@ -132,6 +138,7 @@ describe('keyboardSlice', function () {
           type: insertKeycap.type,
           payload: {
             size: '2U',
+            lastUpdateLength: 3,
             usedKey: {
               id: '2U_2',
               position: {
@@ -146,6 +153,7 @@ describe('keyboardSlice', function () {
           putKeycaps: [
             {
               size: '2U',
+              lastUpdateLength: 3,
               usedKeys: [
                 {
                   id: '2U',
@@ -187,6 +195,7 @@ describe('keyboardSlice', function () {
         const payloadFixture: { type: string; payload: KeyboardPayload } = {
           type: removeKeycap.type,
           payload: {
+            lastUpdateLength: 1,
             size: '2.25U',
             usedKey: {
               id: '2.25U',
@@ -202,6 +211,7 @@ describe('keyboardSlice', function () {
           putKeycaps: [
             {
               size: '2.25U',
+              lastUpdateLength: 1,
               usedKeys: [],
             },
           ],
@@ -213,6 +223,7 @@ describe('keyboardSlice', function () {
               putKeycaps: [
                 {
                   size: '2.25U',
+                  lastUpdateLength: 1,
                   usedKeys: [
                     {
                       id: '2.25U',
@@ -236,6 +247,7 @@ describe('keyboardSlice', function () {
           type: removeKeycap.type,
           payload: {
             size: '2.25U',
+            lastUpdateLength: 1,
             usedKey: {
               id: '2.25U',
               position: {
@@ -254,6 +266,27 @@ describe('keyboardSlice', function () {
           keyboardSlice.reducer({ putKeycaps: [] }, payloadFixture)
         ).toEqual(expected);
       });
+
+      it('should not remove `dont match size`', function () {
+        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+          type: removeKeycap.type,
+          payload: {
+            size: '1.5U',
+            lastUpdateLength: 1,
+            usedKey: {
+              id: '1.5U',
+              position: {
+                x: 212,
+                y: 238,
+              },
+              selected: true,
+            },
+          },
+        };
+        expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
+          stateFixture
+        );
+      });
     });
 
     describe('#updateKeycap', function () {
@@ -262,6 +295,7 @@ describe('keyboardSlice', function () {
           type: updateKeycap.type,
           payload: {
             size: '2U',
+            lastUpdateLength: 3,
             usedKey: {
               id: '2U_1',
               position: {
@@ -276,6 +310,7 @@ describe('keyboardSlice', function () {
           putKeycaps: [
             {
               size: '2U',
+              lastUpdateLength: 2,
               usedKeys: [
                 {
                   id: '2U',
@@ -300,6 +335,27 @@ describe('keyboardSlice', function () {
 
         expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
           expected
+        );
+      });
+
+      it('should not update `dont match size`', function () {
+        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+          type: updateKeycap.type,
+          payload: {
+            size: '1.5U',
+            lastUpdateLength: 1,
+            usedKey: {
+              id: '1.5U',
+              position: {
+                x: 123,
+                y: 456,
+              },
+              selected: true,
+            },
+          },
+        };
+        expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
+          stateFixture
         );
       });
     });

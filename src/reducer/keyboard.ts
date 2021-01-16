@@ -12,6 +12,7 @@ export interface KeyboardState {
 // sizeをキーにして同じsizeのkeycapを管理している
 interface Keycap {
   size: KeycapSize;
+  lastUpdateLength: number;
   usedKeys: UsedKey[];
 }
 
@@ -31,6 +32,7 @@ export interface Position {
 export interface KeyboardPayload {
   size: KeycapSize;
   usedKey: UsedKey;
+  lastUpdateLength: number;
 }
 
 const keyboardSlice = createSlice({
@@ -47,6 +49,7 @@ const keyboardSlice = createSlice({
         A.map((keycap) =>
           keycap.size === action.payload.size
             ? {
+                lastUpdateLength: action.payload.lastUpdateLength,
                 size: keycap.size,
                 usedKeys: A.snoc(keycap.usedKeys, action.payload.usedKey),
               }
@@ -58,6 +61,7 @@ const keyboardSlice = createSlice({
         A.of(state),
         A.chain((state) =>
           A.snoc(state.putKeycaps, {
+            lastUpdateLength: action.payload.lastUpdateLength,
             size: action.payload.size,
             usedKeys: A.of(action.payload.usedKey),
           })
@@ -85,6 +89,7 @@ const keyboardSlice = createSlice({
         A.map((keycap) =>
           keycap.size === action.payload.size
             ? {
+                lastUpdateLength: keycap.lastUpdateLength,
                 size: action.payload.size,
                 usedKeys: pipe(
                   keycap.usedKeys,
@@ -109,6 +114,7 @@ const keyboardSlice = createSlice({
         A.map((keycap) =>
           keycap.size === action.payload.size
             ? {
+                lastUpdateLength: keycap.lastUpdateLength,
                 size: action.payload.size,
                 usedKeys: pipe(
                   keycap.usedKeys,
