@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack serve",
-    "test": "jest",
+    "test": "jest --verbose",
     "lint:eslint": "npx eslint './**/*.{ts,tsx}'",
     "lint:prettier": "npx prettier --check './**/*.{ts,tsx}'",
     "lint:all": "yarn lint:eslint && yarn lint:prettier"
