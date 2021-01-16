@@ -1,10 +1,12 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
+import * as A from 'fp-ts/lib/Array';
+import * as O from 'fp-ts/lib/Option';
 import React from 'react';
 import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { fold } from '../ext/boolean';
 import { insertKeycap, updateKeycap } from '../reducer';
 import { KeyboardPayload } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
@@ -32,7 +34,6 @@ const KeyBoard: React.FC = () => {
     canDrop: () => true,
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
-
       const handleActionByFlag = (
         position: XYCoord,
         lastUpdateLength: number
@@ -62,44 +63,21 @@ const KeyBoard: React.FC = () => {
             })
           )
         );
-      const action = pipe(
+      const action: O.Option<PayloadAction<KeyboardPayload>> = pipe(
         O.bindTo('position')(O.fromNullable(monitor.getSourceClientOffset())),
         O.bind('usedKeysLength', () =>
           pipe(
             O.of(putKeycaps.filter((v) => v.size === item.size)),
-            O.map((keycaps) =>
-              keycaps.length !== 0
-                ? O.some(keycaps.map((v) => v.lastUpdateLength)[0]) // TODO: 非常にダサい
-                : O.some(0)
-            )
-          )
-        ),
-        O.bind('action', (bind) =>
-          pipe(
-            O.bindTo('length')(bind.usedKeysLength),
-            O.bind('action', (v) =>
-              O.some(handleActionByFlag(bind.position, v.length))
-            ),
-            O.map((v) => O.some(v.action)),
-            O.getOrElse(() =>
-              pipe(
-                bind.usedKeysLength,
-                O.map((lastUpdateLength) =>
-                  insertKeycap({
-                    size: item.size,
-                    lastUpdateLength,
-                    usedKey: {
-                      id: item._key,
-                      position: bind.position,
-                      selected: false,
-                    },
-                  })
-                )
+            O.chain((keycaps) =>
+              fold(
+                keycaps.length !== 0,
+                A.head(keycaps.map((v) => v.lastUpdateLength)),
+                O.some(0)
               )
             )
           )
         ),
-        O.map((bind) => bind.action)
+        O.map((bind) => handleActionByFlag(bind.position, bind.usedKeysLength))
       );
 
       if (O.isSome(action)) {
