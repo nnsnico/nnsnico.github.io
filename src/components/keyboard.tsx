@@ -35,16 +35,16 @@ const KeyBoard: React.FC = () => {
 
       const handleActionByFlag = (
         position: XYCoord,
-        usedKeysLength: number
+        lastUpdateLength: number
       ): PayloadAction<KeyboardPayload> =>
         pipe(
           O.bindTo('_')(item.isDragedFromTab),
           O.map(() =>
             insertKeycap({
               size: item.size,
-              lastUpdateLength: usedKeysLength + 1,
+              lastUpdateLength: lastUpdateLength + 1,
               usedKey: {
-                id: item._key + '_' + usedKeysLength,
+                id: item._key + '_' + lastUpdateLength,
                 position,
                 selected: false,
               },
@@ -53,7 +53,7 @@ const KeyBoard: React.FC = () => {
           O.getOrElse(() =>
             updateKeycap({
               size: item.size,
-              lastUpdateLength: usedKeysLength,
+              lastUpdateLength: lastUpdateLength,
               usedKey: {
                 id: item._key,
                 position,
