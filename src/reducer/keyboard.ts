@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as A from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
 
+import * as B from '../ext/boolean';
 import { KeycapSize } from '../types';
 
 // keyboard上に設置されているKeycapのリスト
@@ -47,13 +48,15 @@ const keyboardSlice = createSlice({
       const createInSameSizeKey: Keycap[] = pipe(
         state.putKeycaps,
         A.map((keycap) =>
-          keycap.size === action.payload.size
-            ? {
-                lastUpdateLength: action.payload.lastUpdateLength,
-                size: keycap.size,
-                usedKeys: A.snoc(keycap.usedKeys, action.payload.usedKey),
-              }
-            : keycap
+          B.fold(
+            keycap.size === action.payload.size,
+            {
+              lastUpdateLength: action.payload.lastUpdateLength,
+              size: keycap.size,
+              usedKeys: A.snoc(keycap.usedKeys, action.payload.usedKey),
+            },
+            keycap
+          )
         )
       );
 
@@ -68,15 +71,17 @@ const keyboardSlice = createSlice({
         )
       );
 
-      return A.isEmpty(
-        state.putKeycaps.filter((v) => v.size === action.payload.size)
-      )
-        ? {
-            putKeycaps: createNewKeys,
-          }
-        : {
-            putKeycaps: createInSameSizeKey,
-          };
+      return B.fold(
+        A.isEmpty(
+          state.putKeycaps.filter((v) => v.size === action.payload.size)
+        ),
+        {
+          putKeycaps: createNewKeys,
+        },
+        {
+          putKeycaps: createInSameSizeKey,
+        }
+      );
     },
 
     //選択されたキーキャップをkeyboardから削除する
@@ -87,16 +92,18 @@ const keyboardSlice = createSlice({
       const selectedKeycapsFilterById: Keycap[] = pipe(
         state.putKeycaps,
         A.map((keycap) =>
-          keycap.size === action.payload.size
-            ? {
-                lastUpdateLength: keycap.lastUpdateLength,
-                size: action.payload.size,
-                usedKeys: pipe(
-                  keycap.usedKeys,
-                  A.filter((usedKey) => usedKey.id != action.payload.usedKey.id)
-                ),
-              }
-            : keycap
+          B.fold(
+            keycap.size === action.payload.size,
+            {
+              lastUpdateLength: keycap.lastUpdateLength,
+              size: action.payload.size,
+              usedKeys: pipe(
+                keycap.usedKeys,
+                A.filter((usedKey) => usedKey.id != action.payload.usedKey.id)
+              ),
+            },
+            keycap
+          )
         )
       );
 
@@ -112,20 +119,24 @@ const keyboardSlice = createSlice({
       const replacePositionMatchesSize: Keycap[] = pipe(
         state.putKeycaps,
         A.map((keycap) =>
-          keycap.size === action.payload.size
-            ? {
-                lastUpdateLength: keycap.lastUpdateLength,
-                size: action.payload.size,
-                usedKeys: pipe(
-                  keycap.usedKeys,
-                  A.map((usedKey) =>
-                    usedKey.id === action.payload.usedKey.id
-                      ? action.payload.usedKey
-                      : usedKey
+          B.fold(
+            keycap.size === action.payload.size,
+            {
+              lastUpdateLength: keycap.lastUpdateLength,
+              size: action.payload.size,
+              usedKeys: pipe(
+                keycap.usedKeys,
+                A.map((usedKey) =>
+                  B.fold(
+                    usedKey.id === action.payload.usedKey.id,
+                    action.payload.usedKey,
+                    usedKey
                   )
-                ),
-              }
-            : keycap
+                )
+              ),
+            },
+            keycap
+          )
         )
       );
 
