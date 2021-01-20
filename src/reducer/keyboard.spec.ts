@@ -1,5 +1,11 @@
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { insertKeycap, removeKeycap, updateKeycap } from '.';
-import keyboardSlice, { KeyboardPayload, KeyboardState } from './keyboard';
+import keyboardSlice, {
+  InsertKeycapPayload,
+  KeyboardState,
+  UpdateKeyboardPayload,
+} from './keyboard';
 
 const stateFixture: KeyboardState = {
   putKeycaps: [
@@ -32,7 +38,7 @@ describe('keyboardSlice', function () {
   describe('reducers', function () {
     describe('#insertKeycap', function () {
       it('should insert to `state#putKeycaps` when state is empty', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+        const payloadFixture: PayloadAction<InsertKeycapPayload> = {
           type: insertKeycap.type,
           payload: {
             lastUpdateLength: 1,
@@ -72,7 +78,7 @@ describe('keyboardSlice', function () {
       });
 
       it('should insert to `state#putKeycaps` when `size` of payload is not equal `state#putKeycaps#size`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+        const payloadFixture: PayloadAction<InsertKeycapPayload> = {
           type: insertKeycap.type,
           payload: {
             size: '2.25U',
@@ -134,7 +140,7 @@ describe('keyboardSlice', function () {
       });
 
       it('should insert to `state#putKeycaps#usedKeys` with a new id when `size` of payload is equal `state#putKeycaps#size`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+        const payloadFixture: PayloadAction<InsertKeycapPayload> = {
           type: insertKeycap.type,
           payload: {
             size: '2U',
@@ -192,10 +198,9 @@ describe('keyboardSlice', function () {
 
     describe('#removeKeycap', function () {
       it('should remove `state#putKeycaps#usedKey`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+        const payloadFixture: PayloadAction<UpdateKeyboardPayload> = {
           type: removeKeycap.type,
           payload: {
-            lastUpdateLength: 1,
             size: '2.25U',
             usedKey: {
               id: '2.25U',
@@ -243,11 +248,10 @@ describe('keyboardSlice', function () {
       });
 
       it('should not remove `state#putKeycaps#usedKey`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+        const payloadFixture: PayloadAction<UpdateKeyboardPayload> = {
           type: removeKeycap.type,
           payload: {
             size: '2.25U',
-            lastUpdateLength: 1,
             usedKey: {
               id: '2.25U',
               position: {
@@ -267,12 +271,11 @@ describe('keyboardSlice', function () {
         ).toEqual(expected);
       });
 
-      it('should not remove `dont match size`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+      it('should not remove keycap which not match size', function () {
+        const payloadFixture: PayloadAction<UpdateKeyboardPayload> = {
           type: removeKeycap.type,
           payload: {
             size: '1.5U',
-            lastUpdateLength: 1,
             usedKey: {
               id: '1.5U',
               position: {
@@ -291,11 +294,10 @@ describe('keyboardSlice', function () {
 
     describe('#updateKeycap', function () {
       it('should update `state#putKeycaps#usedKeys` when `usedKey#id` of payload is equal to `state#putKeycaps#usedKeys#id`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+        const payloadFixture: PayloadAction<UpdateKeyboardPayload> = {
           type: updateKeycap.type,
           payload: {
             size: '2U',
-            lastUpdateLength: 3,
             usedKey: {
               id: '2U_1',
               position: {
@@ -338,12 +340,11 @@ describe('keyboardSlice', function () {
         );
       });
 
-      it('should not update `dont match size`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
+      it('should not update keycap which not match size', function () {
+        const payloadFixture: PayloadAction<UpdateKeyboardPayload> = {
           type: updateKeycap.type,
           payload: {
             size: '1.5U',
-            lastUpdateLength: 1,
             usedKey: {
               id: '1.5U',
               position: {

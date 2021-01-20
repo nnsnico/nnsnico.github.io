@@ -7,7 +7,10 @@ import { useDrop, XYCoord } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { insertKeycap, updateKeycap } from '../reducer';
-import { KeyboardPayload } from '../reducer/keyboard';
+import {
+  InsertKeycapPayload,
+  UpdateKeyboardPayload,
+} from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
 import RemovableKeycap from './molecules/removableKeycap';
 
@@ -36,7 +39,7 @@ const KeyBoard: React.FC = () => {
       const handleActionByFlag = (
         position: XYCoord,
         lastUpdateLength: number
-      ): PayloadAction<KeyboardPayload> =>
+      ): PayloadAction<InsertKeycapPayload | UpdateKeyboardPayload> =>
         pipe(
           O.bindTo('_')(item.isDragedFromTab),
           O.map(() =>
@@ -53,7 +56,6 @@ const KeyBoard: React.FC = () => {
           O.getOrElse(() =>
             updateKeycap({
               size: item.size,
-              lastUpdateLength: lastUpdateLength,
               usedKey: {
                 id: item._key,
                 position,
@@ -62,7 +64,9 @@ const KeyBoard: React.FC = () => {
             })
           )
         );
-      const action: O.Option<PayloadAction<KeyboardPayload>> = pipe(
+      const action: O.Option<
+        PayloadAction<InsertKeycapPayload | UpdateKeyboardPayload>
+      > = pipe(
         O.bindTo('position')(O.fromNullable(monitor.getSourceClientOffset())),
         O.bind('usedKeysLength', () =>
           pipe(

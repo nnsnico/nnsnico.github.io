@@ -29,11 +29,18 @@ export interface Position {
   y: number;
 }
 
+//
 // action payload
-export interface KeyboardPayload {
+//
+export interface InsertKeycapPayload {
   size: KeycapSize;
   usedKey: UsedKey;
   lastUpdateLength: number;
+}
+
+export interface UpdateKeyboardPayload {
+  size: KeycapSize;
+  usedKey: UsedKey;
 }
 
 const keyboardSlice = createSlice({
@@ -43,7 +50,7 @@ const keyboardSlice = createSlice({
     // insert new keycap in keyboard
     insertKeycap: (
       state: KeyboardState,
-      action: PayloadAction<KeyboardPayload>
+      action: PayloadAction<InsertKeycapPayload>
     ): KeyboardState => {
       const createInSameSizeKey: Keycap[] = pipe(
         state.putKeycaps,
@@ -87,7 +94,7 @@ const keyboardSlice = createSlice({
     //選択されたキーキャップをkeyboardから削除する
     removeKeycap: (
       state: KeyboardState,
-      action: PayloadAction<KeyboardPayload>
+      action: PayloadAction<UpdateKeyboardPayload>
     ): KeyboardState => {
       const selectedKeycapsFilterById: Keycap[] = pipe(
         state.putKeycaps,
@@ -114,7 +121,7 @@ const keyboardSlice = createSlice({
     // update keycap
     updateKeycap: (
       state: KeyboardState,
-      action: PayloadAction<KeyboardPayload>
+      action: PayloadAction<UpdateKeyboardPayload>
     ): KeyboardState => {
       const replacePositionMatchesSize: Keycap[] = pipe(
         state.putKeycaps,
@@ -146,4 +153,5 @@ const keyboardSlice = createSlice({
     },
   },
 });
+
 export default keyboardSlice;
