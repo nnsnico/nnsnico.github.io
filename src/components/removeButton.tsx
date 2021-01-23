@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { removeKeycap } from '../reducer';
-import { KeyboardPayload, Position } from '../reducer/keyboard';
+import { Position, UpdateKeyboardPayload } from '../reducer/keyboard';
 import { KeycapSize } from '../types';
 
 interface RemoveButtonProps {
@@ -29,7 +29,7 @@ const RemoveButton: React.FC<RemoveButtonProps> = (
 
   return (
     <div
-      onClick={(): PayloadAction<KeyboardPayload> => dispatch(remove)}
+      onClick={(): PayloadAction<UpdateKeyboardPayload> => dispatch(remove)}
       style={styles}>
       [x]
     </div>

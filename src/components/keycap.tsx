@@ -43,7 +43,7 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
         }
       />
       <span>{_key}</span>
-      <span>{props.children}</span>
+      {props.children}
     </div>
   );
 };

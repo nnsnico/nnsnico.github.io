@@ -2,12 +2,13 @@ import { Button, Flex } from '@chakra-ui/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AppDispatch, decrement, increment, RootState } from '../reducer';
+import { decrement, increment } from '../reducer';
+import { RootState } from '../types';
 import Logo from './logo';
 
 const Navigation: React.FC = () => {
   const count = useSelector((state: RootState) => state.counter);
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   return (
     <Flex
       as="nav"
