@@ -1,17 +1,14 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { fold, Option } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
-import * as A from 'fp-ts/lib/Array';
-import * as O from 'fp-ts/lib/Option';
 import React from 'react';
-import { useDrop, XYCoord } from 'react-dnd';
+import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeycap, updateKeycap } from '../reducer';
-import {
-  InsertKeycapPayload,
-  UpdateKeyboardPayload,
-} from '../reducer/keyboard';
+import * as B from '../ext/boolean';
+import { updateKeycap } from '../reducer';
+import { UsedKey } from '../reducer/keyboard';
 import { DragItem, KeycapSize, RootState } from '../types';
+import KeyFrame from './atomic/keyframe';
 import RemovableKeycap from './molecules/removableKeycap';
 
 const wrappedDivStyle: React.CSSProperties = {
@@ -29,78 +26,45 @@ const keyboardStyle: React.CSSProperties = {
 };
 
 const KeyBoard: React.FC = () => {
-  const { putKeycaps } = useSelector((state: RootState) => state.keyboard);
+  const { keyframes } = useSelector((state: RootState) => state.keyboard);
   const dispatch = useDispatch();
   const [, drop] = useDrop({
     accept: 'keycap',
     canDrop: () => true,
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
-      const handleActionByFlag = (
-        position: XYCoord,
-        lastUpdateLength: number
-      ): PayloadAction<InsertKeycapPayload | UpdateKeyboardPayload> =>
-        pipe(
-          O.bindTo('_')(item.isDragedFromTab),
-          O.map(() =>
-            insertKeycap({
-              size: item.size,
-              lastUpdateLength: lastUpdateLength + 1,
-              usedKey: {
-                id: item._key + '_' + lastUpdateLength,
-                position,
-                selected: false,
-              },
-            })
-          ),
-          O.getOrElse(() =>
-            updateKeycap({
-              size: item.size,
-              usedKey: {
-                id: item._key,
-                position,
-                selected: false,
-              },
-            })
-          )
-        );
-      const action: O.Option<
-        PayloadAction<InsertKeycapPayload | UpdateKeyboardPayload>
-      > = pipe(
-        O.bindTo('position')(O.fromNullable(monitor.getSourceClientOffset())),
-        O.bind('usedKeysLength', () =>
-          pipe(
-            O.of(putKeycaps.filter((v) => v.size === item.size)),
-            O.map((keycaps) =>
-              pipe(
-                A.head(keycaps.map((v) => v.lastUpdateLength)),
-                O.getOrElse(() => 0)
-              )
-            )
-          )
-        ),
-        O.map((bind) => handleActionByFlag(bind.position, bind.usedKeysLength))
+      dispatch(
+        updateKeycap({
+          size: item.size,
+          position: { x: 2, y: 2 },
+          usedKey: {
+            id: item._key,
+            selected: false,
+          },
+        })
       );
-
-      if (O.isSome(action)) {
-        dispatch(action.value);
-      } else {
-        console.error('action is none');
-      }
     },
   });
 
   return (
-    <div style={{ ...wrappedDivStyle, ...keyboardStyle }} ref={drop}>
-      {putKeycaps.flatMap((keycap) =>
-        keycap.usedKeys.map((key) =>
+    <div
+      style={{ ...wrappedDivStyle, ...keyboardStyle, width: '80%' }}
+      ref={drop}>
+      {keyframes.map((keyframe) =>
+        B.fold(
+          keyframe.isPut,
           renderKeycap(
-            key.id,
-            keycap.size,
-            key.position.x,
-            key.position.y,
-            key.selected
-          )
+            keyframe.keycap,
+            keyframe.size,
+            keyframe.position.x,
+            keyframe.position.y
+          ),
+          <KeyFrame
+            keycapSize={14.5}
+            position={keyframe.position}
+            pcbViewWidth={1000}
+            size={keyframe.size}
+          />
         )
       )}
     </div>
@@ -108,21 +72,26 @@ const KeyBoard: React.FC = () => {
 };
 
 function renderKeycap(
-  capId: string,
+  maybeUsedKey: Option<UsedKey>,
   size: KeycapSize,
   x: number,
-  y: number,
-  selected: boolean
+  y: number
 ): JSX.Element {
-  return (
-    <RemovableKeycap
-      key={capId}
-      _key={capId}
-      size={size}
-      keycapStyles={{ position: 'fixed', top: y, left: x }}
-      selected={selected}
-      position={{ x, y }}
-    />
+  return pipe(
+    maybeUsedKey,
+    fold(
+      () => <div />,
+      (usedKey) => (
+        <RemovableKeycap
+          key={usedKey.id}
+          _key={usedKey.id}
+          size={size}
+          keycapStyles={{ position: 'fixed', top: y, left: x }}
+          selected={usedKey.selected}
+          position={{ x, y }}
+        />
+      )
+    )
   );
 }
 

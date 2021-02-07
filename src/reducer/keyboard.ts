@@ -1,26 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as A from 'fp-ts/Array';
-import { pipe } from 'fp-ts/function';
+import { none, Option, some } from 'fp-ts/Option';
 
 import * as B from '../ext/boolean';
+import { initialKeyFrame } from '../keyframes';
 import { KeycapSize } from '../types';
 
-// keyboard上に設置されているKeycapのリスト
 export interface KeyboardState {
-  putKeycaps: Keycap[];
+  keyframes: KeyFrame[];
+  pcbName: string;
 }
 
-// sizeをキーにして同じsizeのkeycapを管理している
-interface Keycap {
+export interface KeyFrame {
+  position: Position;
   size: KeycapSize;
-  lastUpdateLength: number;
-  usedKeys: UsedKey[];
+  isPut: boolean;
+  keycap: Option<UsedKey>;
 }
 
 // keyboard上で使用されているkeycapのidと座標
-interface UsedKey {
+export interface UsedKey {
   id: string;
-  position: Position;
   selected: boolean;
 }
 
@@ -33,9 +32,9 @@ export interface Position {
 // action payload
 //
 export interface InsertKeycapPayload {
-  size: KeycapSize;
+  position: Position;
   usedKey: UsedKey;
-  lastUpdateLength: number;
+  size: KeycapSize;
 }
 
 export interface UpdateKeyboardPayload {
@@ -43,115 +42,68 @@ export interface UpdateKeyboardPayload {
   usedKey: UsedKey;
 }
 
+export interface RemoveKeyboardPayload {
+  position: Position;
+}
+
+export interface InitKeyBoardPayload {
+  keyboard: KeyboardState;
+}
+
 const keyboardSlice = createSlice({
   name: 'keyboard',
-  initialState: { putKeycaps: [], selectedKeycapIds: [] } as KeyboardState,
+  initialState: {
+    keyframes: initialKeyFrame,
+    pcbName: 'default',
+  } as KeyboardState,
   reducers: {
-    // insert new keycap in keyboard
-    insertKeycap: (
+    initKeyBoard: (
+      _: KeyboardState,
+      action: PayloadAction<InitKeyBoardPayload>
+    ): KeyboardState => {
+      return action.payload.keyboard;
+    },
+
+    // update keycap
+    updateKeycap: (
       state: KeyboardState,
       action: PayloadAction<InsertKeycapPayload>
-    ): KeyboardState => {
-      const createInSameSizeKey: Keycap[] = pipe(
-        state.putKeycaps,
-        A.map((keycap) =>
+    ): KeyboardState =>
+      Object.assign(state, {
+        keyframes: state.keyframes.map((keyframe) =>
           B.fold(
-            keycap.size === action.payload.size,
+            keyframe.position == action.payload.position &&
+              keyframe.size == action.payload.size,
             {
-              lastUpdateLength: action.payload.lastUpdateLength,
-              size: keycap.size,
-              usedKeys: A.snoc(keycap.usedKeys, action.payload.usedKey),
-            },
-            keycap
+              position: action.payload.position,
+              size: keyframe.size,
+              isPut: true,
+              keycap: some(action.payload.usedKey),
+            } as KeyFrame,
+            keyframe
           )
-        )
-      );
-
-      const createNewKeys: Keycap[] = pipe(
-        A.of(state),
-        A.chain((state) =>
-          A.snoc(state.putKeycaps, {
-            lastUpdateLength: action.payload.lastUpdateLength,
-            size: action.payload.size,
-            usedKeys: A.of(action.payload.usedKey),
-          })
-        )
-      );
-
-      return B.fold(
-        A.isEmpty(
-          state.putKeycaps.filter((v) => v.size === action.payload.size)
         ),
-        {
-          putKeycaps: createNewKeys,
-        },
-        {
-          putKeycaps: createInSameSizeKey,
-        }
-      );
-    },
+      }),
 
     //選択されたキーキャップをkeyboardから削除する
     removeKeycap: (
       state: KeyboardState,
-      action: PayloadAction<UpdateKeyboardPayload>
-    ): KeyboardState => {
-      const selectedKeycapsFilterById: Keycap[] = pipe(
-        state.putKeycaps,
-        A.map((keycap) =>
+      action: PayloadAction<RemoveKeyboardPayload>
+    ): KeyboardState =>
+      Object.assign(state, {
+        keyframes: state.keyframes.map((keyframe) =>
           B.fold(
-            keycap.size === action.payload.size,
+            keyframe.position == action.payload.position,
             {
-              lastUpdateLength: keycap.lastUpdateLength,
-              size: action.payload.size,
-              usedKeys: pipe(
-                keycap.usedKeys,
-                A.filter((usedKey) => usedKey.id != action.payload.usedKey.id)
-              ),
-            },
-            keycap
+              position: action.payload.position,
+              size: keyframe.size,
+              isPut: false,
+              keycap: none,
+            } as KeyFrame,
+            keyframe
           )
-        )
-      );
-
-      return {
-        putKeycaps: selectedKeycapsFilterById,
-      };
-    },
-    // update keycap
-    updateKeycap: (
-      state: KeyboardState,
-      action: PayloadAction<UpdateKeyboardPayload>
-    ): KeyboardState => {
-      const replacePositionMatchesSize: Keycap[] = pipe(
-        state.putKeycaps,
-        A.map((keycap) =>
-          B.fold(
-            keycap.size === action.payload.size,
-            {
-              lastUpdateLength: keycap.lastUpdateLength,
-              size: action.payload.size,
-              usedKeys: pipe(
-                keycap.usedKeys,
-                A.map((usedKey) =>
-                  B.fold(
-                    usedKey.id === action.payload.usedKey.id,
-                    action.payload.usedKey,
-                    usedKey
-                  )
-                )
-              ),
-            },
-            keycap
-          )
-        )
-      );
-
-      return {
-        putKeycaps: replacePositionMatchesSize,
-      };
-    },
+        ),
+      }),
   },
 });
-
 export default keyboardSlice;
