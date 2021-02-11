@@ -13,16 +13,12 @@ import RemovableKeycap from './molecules/removableKeycap';
 
 const wrappedDivStyle: React.CSSProperties = {
   position: 'absolute',
-  width: '100%',
   top: 0,
   zIndex: -1,
 };
 
 const keyboardStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
   height: '100vh',
-  justifyContent: 'center',
 };
 
 const KeyBoard: React.FC = () => {
@@ -46,27 +42,47 @@ const KeyBoard: React.FC = () => {
     },
   });
 
+  const block = [];
+  let column: JSX.Element[] = [];
+  let y = 0;
+  for (let i = 0; i < keyframes.length; i++) {
+    if (y != keyframes[i].position.y) {
+      y = keyframes[i].position.y;
+      block.push(
+        <div key={i * 100} style={{ display: 'flex' }}>
+          {column}
+        </div>
+      );
+      column = [];
+    }
+    column.push(
+      B.fold(
+        keyframes[i].isPut,
+        renderKeycap(
+          keyframes[i].keycap,
+          keyframes[i].size,
+          keyframes[i].position.x,
+          keyframes[i].position.y
+        ),
+        <KeyFrame
+          keycapSize={14.5}
+          position={keyframes[i].position}
+          pcbViewWidth={1000}
+          pcbViewHeight={1000}
+          size={keyframes[i].size}
+        />
+      )
+    );
+  }
+  block.push(
+    <div key={400} style={{ display: 'flex' }}>
+      {column}
+    </div>
+  );
+
   return (
-    <div
-      style={{ ...wrappedDivStyle, ...keyboardStyle, width: '80%' }}
-      ref={drop}>
-      {keyframes.map((keyframe) =>
-        B.fold(
-          keyframe.isPut,
-          renderKeycap(
-            keyframe.keycap,
-            keyframe.size,
-            keyframe.position.x,
-            keyframe.position.y
-          ),
-          <KeyFrame
-            keycapSize={14.5}
-            position={keyframe.position}
-            pcbViewWidth={1000}
-            size={keyframe.size}
-          />
-        )
-      )}
+    <div style={{ ...wrappedDivStyle, ...keyboardStyle }} ref={drop}>
+      {block}
     </div>
   );
 };

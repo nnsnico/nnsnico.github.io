@@ -169,13 +169,7 @@ export const initialKeyFrame: KeyFrame[] = [
   },
   {
     position: { x: 13, y: 1 },
-    size: '1U',
-    isPut: false,
-    keycap: none,
-  },
-  {
-    position: { x: 14, y: 1 },
-    size: '2.25U',
+    size: '1.5U',
     isPut: false,
     keycap: none,
   },
