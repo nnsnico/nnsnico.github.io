@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { none, Option, some } from 'fp-ts/Option';
 
 import * as B from '../ext/boolean';
-import { initialKeyFrame } from '../keyframes';
+import { MAC_JIS_PCB } from '../keyframes';
 import { KeycapSize } from '../types';
 
 export interface KeyboardState {
@@ -53,8 +53,8 @@ export interface InitKeyBoardPayload {
 const keyboardSlice = createSlice({
   name: 'keyboard',
   initialState: {
-    keyframes: initialKeyFrame,
-    pcbName: 'default',
+    keyframes: MAC_JIS_PCB.keyframes,
+    pcbName: MAC_JIS_PCB.pcbName,
   } as KeyboardState,
   reducers: {
     initKeyBoard: (
@@ -72,7 +72,8 @@ const keyboardSlice = createSlice({
       Object.assign(state, {
         keyframes: state.keyframes.map((keyframe) =>
           B.fold(
-            keyframe.position == action.payload.position &&
+            keyframe.position.x == action.payload.position.x &&
+              keyframe.position.y == action.payload.position.y &&
               keyframe.size == action.payload.size,
             {
               position: action.payload.position,

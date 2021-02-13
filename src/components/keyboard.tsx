@@ -1,13 +1,12 @@
 import { fold, Option } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import React from 'react';
-import { useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import * as B from '../ext/boolean';
-import { updateKeycap } from '../reducer';
+import { MAC_JIS_PCB } from '../keyframes';
 import { UsedKey } from '../reducer/keyboard';
-import { DragItem, KeycapSize, RootState } from '../types';
+import { KeycapSize, RootState } from '../types';
 import KeyFrame from './atomic/keyframe';
 import RemovableKeycap from './molecules/removableKeycap';
 
@@ -18,29 +17,12 @@ const wrappedDivStyle: React.CSSProperties = {
 };
 
 const keyboardStyle: React.CSSProperties = {
-  height: '100vh',
+  // height: '100vh',
+  marginTop: '80px',
 };
 
 const KeyBoard: React.FC = () => {
   const { keyframes } = useSelector((state: RootState) => state.keyboard);
-  const dispatch = useDispatch();
-  const [, drop] = useDrop({
-    accept: 'keycap',
-    canDrop: () => true,
-    drop: (_, monitor) => {
-      const item = monitor.getItem() as DragItem;
-      dispatch(
-        updateKeycap({
-          size: item.size,
-          position: { x: 2, y: 2 },
-          usedKey: {
-            id: item._key,
-            selected: false,
-          },
-        })
-      );
-    },
-  });
 
   const block = [];
   let column: JSX.Element[] = [];
@@ -65,10 +47,10 @@ const KeyBoard: React.FC = () => {
           keyframes[i].position.y
         ),
         <KeyFrame
-          keycapSize={14.5}
+          keycapTotalSize={MAC_JIS_PCB.keycapTotalWidth}
           position={keyframes[i].position}
-          pcbViewWidth={1000}
-          pcbViewHeight={1000}
+          pcbViewWidth={MAC_JIS_PCB.width}
+          pcbViewHeight={MAC_JIS_PCB.height}
           size={keyframes[i].size}
         />
       )
@@ -80,11 +62,7 @@ const KeyBoard: React.FC = () => {
     </div>
   );
 
-  return (
-    <div style={{ ...wrappedDivStyle, ...keyboardStyle }} ref={drop}>
-      {block}
-    </div>
-  );
+  return <div style={{ ...wrappedDivStyle, ...keyboardStyle }}>{block}</div>;
 };
 
 function renderKeycap(
@@ -102,7 +80,6 @@ function renderKeycap(
           key={usedKey.id}
           _key={usedKey.id}
           size={size}
-          keycapStyles={{ position: 'fixed', top: y, left: x }}
           selected={usedKey.selected}
           position={{ x, y }}
         />

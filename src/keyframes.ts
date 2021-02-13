@@ -4,7 +4,7 @@ import { KeyFrame } from './reducer/keyboard';
 
 //macキーボードにしよう
 //up-downキー
-export const initialKeyFrame: KeyFrame[] = [
+const initialKeyFrame: KeyFrame[] = [
   {
     position: { x: 0, y: 0 },
     size: '1.5U',
@@ -385,3 +385,10 @@ export const initialKeyFrame: KeyFrame[] = [
     keycap: none,
   },
 ];
+export const MAC_JIS_PCB = {
+  keyframes: initialKeyFrame,
+  pcbName: 'macJis',
+  width: 1000,
+  height: 1000,
+  keycapTotalWidth: 14.5,
+};

@@ -17,7 +17,6 @@ interface RemovableKeycapProps {
   _key: string;
   selected: boolean;
   position: Position;
-  keycapStyles?: React.CSSProperties;
 }
 
 const RemovableKeycap: React.FC<RemovableKeycapProps> = (
@@ -35,7 +34,6 @@ const RemovableKeycap: React.FC<RemovableKeycapProps> = (
 
   return (
     <Keycap
-      styles={props.keycapStyles}
       _key={props._key}
       size={props.size}
       onClick={(): PayloadAction<UpdateKeyboardPayload> =>
@@ -43,9 +41,12 @@ const RemovableKeycap: React.FC<RemovableKeycapProps> = (
       }>
       <RemoveButton
         size={props.size}
-        id={props._key}
         position={props.position}
-        styles={{ visibility: props.selected ? 'visible' : 'hidden' }}
+        styles={{
+          visibility: props.selected ? 'visible' : 'hidden',
+          position: 'absolute',
+          bottom: 0,
+        }}
       />
     </Keycap>
   );
