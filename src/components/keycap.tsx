@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 
 import { DragItem, KeycapSize } from '../types';
 
-interface KeycapProps {
+export interface KeycapProps {
   _key: string;
   size: KeycapSize;
   styles?: React.CSSProperties;
