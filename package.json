@@ -9,7 +9,9 @@
     "typecheck": "tsc -p . --noEmit",
     "lint:eslint": "npx eslint './**/*.{ts,tsx}'",
     "lint:prettier": "npx prettier --check './**/*.{ts,tsx}'",
-    "lint:all": "yarn lint:eslint && yarn lint:prettier"
+    "lint:all": "yarn lint:eslint && yarn lint:prettier",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "eslintConfig": {
     "extends": [
@@ -41,6 +43,11 @@
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "@storybook/addon-actions": "^6.1.18",
+    "@storybook/addon-essentials": "^6.1.18",
+    "@storybook/addon-knobs": "^6.1.18",
+    "@storybook/addon-links": "^6.1.18",
+    "@storybook/react": "^6.1.18",
     "@trivago/prettier-plugin-sort-imports": "^1.4.0",
     "@types/jest": "^26.0.19",
     "@types/react": "^17.0.0",

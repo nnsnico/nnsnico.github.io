@@ -6,7 +6,7 @@ import { convertNumberFromUnit } from '../keycapSize';
 import { MAC_JIS_PCB } from '../keyframes';
 import { DragItem, KeycapSize } from '../types';
 
-interface KeycapProps {
+export interface KeycapProps {
   _key: string;
   size: KeycapSize;
   styles?: React.CSSProperties;
