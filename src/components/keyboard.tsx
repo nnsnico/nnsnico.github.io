@@ -31,7 +31,7 @@ const KeyBoard: React.FC = () => {
     if (y != keyframes[i].position.y) {
       y = keyframes[i].position.y;
       block.push(
-        <div key={i * 100} style={{ display: 'flex' }}>
+        <div key={`column_${y}`} style={{ display: 'flex' }}>
           {column}
         </div>
       );
@@ -47,6 +47,7 @@ const KeyBoard: React.FC = () => {
           keyframes[i].position.y
         ),
         <KeyFrame
+          key={`${keyframes[i].position.x}_${keyframes[i].position.y}`}
           keycapTotalSize={MAC_JIS_PCB.keycapTotalWidth}
           position={keyframes[i].position}
           pcbViewWidth={MAC_JIS_PCB.width}
@@ -57,7 +58,7 @@ const KeyBoard: React.FC = () => {
     );
   }
   block.push(
-    <div key={400} style={{ display: 'flex' }}>
+    <div key={`column_${y + 1}`} style={{ display: 'flex' }}>
       {column}
     </div>
   );
@@ -77,7 +78,7 @@ function renderKeycap(
       () => <div />,
       (usedKey) => (
         <RemovableKeycap
-          key={usedKey.id}
+          key={`${usedKey.id}_${x}_${y}`}
           _key={usedKey.id}
           size={size}
           selected={usedKey.selected}

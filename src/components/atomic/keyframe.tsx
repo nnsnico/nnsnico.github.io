@@ -40,7 +40,6 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
   return (
     <div
       ref={drop}
-      key={(props.position.x + 1) * (props.position.y + 1)}
       style={{
         width:
           (props.pcbViewWidth / props.keycapTotalSize) *
