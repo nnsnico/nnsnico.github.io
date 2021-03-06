@@ -3,11 +3,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { updateKeycap } from '../../reducer';
-import {
-  InsertKeycapPayload,
-  Position,
-  UpdateKeyboardPayload,
-} from '../../reducer/keyboard';
+import { Position, UpdateKeycapPayload } from '../../reducer/keyboard';
 import { KeycapSize } from '../../types';
 import Keycap from '../keycap';
 import RemoveButton from '../removeButton';
@@ -23,7 +19,7 @@ const RemovableKeycap: React.FC<RemovableKeycapProps> = (
   props: RemovableKeycapProps
 ) => {
   const dispatch = useDispatch();
-  const toggleSelectAction: PayloadAction<InsertKeycapPayload> = updateKeycap({
+  const toggleSelectAction: PayloadAction<UpdateKeycapPayload> = updateKeycap({
     position: props.position,
     usedKey: {
       id: props._key,
@@ -36,7 +32,7 @@ const RemovableKeycap: React.FC<RemovableKeycapProps> = (
     <Keycap
       _key={props._key}
       size={props.size}
-      onClick={(): PayloadAction<UpdateKeyboardPayload> =>
+      onClick={(): PayloadAction<UpdateKeycapPayload> =>
         dispatch(toggleSelectAction)
       }>
       <RemoveButton
