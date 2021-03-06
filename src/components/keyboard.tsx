@@ -17,7 +17,6 @@ const wrappedDivStyle: React.CSSProperties = {
 };
 
 const keyboardStyle: React.CSSProperties = {
-  // height: '100vh',
   marginTop: '80px',
 };
 
