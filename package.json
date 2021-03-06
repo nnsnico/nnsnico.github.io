@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack serve",
-    "test": "jest --verbose",
+    "test": "jest --verbose --coverage",
     "typecheck": "tsc -p . --noEmit",
     "lint:eslint": "npx eslint './**/*.{ts,tsx}'",
     "lint:prettier": "npx prettier --check './**/*.{ts,tsx}'",
@@ -68,7 +68,7 @@
     "prettier": "^2.2.1",
     "react-refresh": "^0.9.0",
     "ts-loader": "^8.0.11",
-    "typescript": "^4.1.2",
+    "typescript": "^4.2.2",
     "webpack": "^5.10.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"

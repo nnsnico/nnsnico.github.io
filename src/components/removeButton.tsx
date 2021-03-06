@@ -3,12 +3,11 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { removeKeycap } from '../reducer';
-import { Position, UpdateKeyboardPayload } from '../reducer/keyboard';
+import { Position, RemoveKeyboardPayload } from '../reducer/keyboard';
 import { KeycapSize } from '../types';
 
 interface RemoveButtonProps {
   size: KeycapSize;
-  id: string;
   position: Position;
   styles?: React.CSSProperties;
 }
@@ -18,18 +17,13 @@ const RemoveButton: React.FC<RemoveButtonProps> = (
 ) => {
   const dispatch = useDispatch();
   const remove = removeKeycap({
-    size: props.size,
-    usedKey: {
-      id: props.id,
-      position: props.position,
-      selected: true,
-    },
+    position: props.position,
   });
   const styles = props.styles;
 
   return (
     <div
-      onClick={(): PayloadAction<UpdateKeyboardPayload> => dispatch(remove)}
+      onClick={(): PayloadAction<RemoveKeyboardPayload> => dispatch(remove)}
       style={styles}>
       [x]
     </div>

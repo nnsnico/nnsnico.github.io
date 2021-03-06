@@ -2,6 +2,8 @@ import { fromNullable } from 'fp-ts/es6/Option';
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
+import { convertNumberFromUnit } from '../keycapSize';
+import { MAC_JIS_PCB } from '../keyframes';
 import { DragItem, KeycapSize } from '../types';
 
 export interface KeycapProps {
@@ -30,19 +32,23 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
       ref={dragRef}
       style={{
         ...props.styles,
+        position: 'relative',
         opacity,
         zIndex: 1,
       }}>
       <img
         style={{
-          width: '200px',
+          width:
+            (MAC_JIS_PCB.width / MAC_JIS_PCB.keycapTotalWidth) *
+            convertNumberFromUnit(props.size),
+          height: MAC_JIS_PCB.height / MAC_JIS_PCB.keycapTotalWidth,
           maxWidth: 'none',
         }}
         src={
           'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
         }
       />
-      <span>{_key}</span>
+      <span style={{ position: 'absolute', top: 0 }}>{_key}</span>
       {props.children}
     </div>
   );
