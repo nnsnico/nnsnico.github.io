@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack serve",
-    "test": "jest --verbose",
+    "test": "jest --verbose --coverage",
     "typecheck": "tsc -p . --noEmit",
     "lint:eslint": "npx eslint './**/*.{ts,tsx}'",
     "lint:prettier": "npx prettier --check './**/*.{ts,tsx}'",

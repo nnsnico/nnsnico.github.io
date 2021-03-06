@@ -11,7 +11,11 @@ const reducers = combineReducers({
 
 // actions
 export const { increment, decrement } = counterSlice.actions;
-export const { removeKeycap, updateKeycap } = keyboardSlice.actions;
+export const {
+  initKeyBoard,
+  removeKeycap,
+  updateKeycap,
+} = keyboardSlice.actions;
 
 // store
 export const store = createStore(reducers);

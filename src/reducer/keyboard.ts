@@ -31,15 +31,10 @@ export interface Position {
 //
 // action payload
 //
-export interface InsertKeycapPayload {
+export interface UpdateKeycapPayload {
   position: Position;
   usedKey: UsedKey;
   size: KeycapSize;
-}
-
-export interface UpdateKeyboardPayload {
-  size: KeycapSize;
-  usedKey: UsedKey;
 }
 
 export interface RemoveKeyboardPayload {
@@ -67,7 +62,7 @@ const keyboardSlice = createSlice({
     // update keycap
     updateKeycap: (
       state: KeyboardState,
-      action: PayloadAction<InsertKeycapPayload>
+      action: PayloadAction<UpdateKeycapPayload>
     ): KeyboardState =>
       Object.assign(state, {
         keyframes: state.keyframes.map((keyframe) =>
@@ -79,7 +74,9 @@ const keyboardSlice = createSlice({
               position: action.payload.position,
               size: keyframe.size,
               isPut: true,
-              keycap: some(action.payload.usedKey),
+              keycap: some(
+                Object.assign(action.payload.usedKey, { selected: false })
+              ),
             } as KeyFrame,
             keyframe
           )
@@ -94,7 +91,8 @@ const keyboardSlice = createSlice({
       Object.assign(state, {
         keyframes: state.keyframes.map((keyframe) =>
           B.fold(
-            keyframe.position == action.payload.position,
+            keyframe.position.x === action.payload.position.x &&
+              keyframe.position.y === action.payload.position.y,
             {
               position: action.payload.position,
               size: keyframe.size,
