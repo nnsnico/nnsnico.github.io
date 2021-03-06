@@ -36,7 +36,7 @@ const stateFixture: KeyboardState = {
 describe('keyboardSlice', function () {
   describe('reducers', function () {
     describe('#initKeyBoard', function () {
-      it('should not update when state incorrect position', function () {
+      it('should not initKeyBoard when state incorrect position', function () {
         const payloadFixture: PayloadAction<InitKeyBoardPayload> = {
           type: initKeyBoard.type,
           payload: {
@@ -168,7 +168,7 @@ describe('keyboardSlice', function () {
         );
       });
 
-      it('should update', function () {
+      it('should update correctly', function () {
         const payloadFixture: PayloadAction<UpdateKeycapPayload> = {
           type: updateKeycap.type,
           payload: {
@@ -277,7 +277,7 @@ describe('keyboardSlice', function () {
         );
       });
 
-      it('should remove', function () {
+      it('should remove correctly', function () {
         const payloadFixture: PayloadAction<RemoveKeyboardPayload> = {
           type: removeKeycap.type,
           payload: {
