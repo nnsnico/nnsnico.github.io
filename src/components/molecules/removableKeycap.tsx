@@ -8,7 +8,7 @@ import { KeycapSize } from '../../types';
 import Keycap from '../keycap';
 import RemoveButton from '../removeButton';
 
-interface RemovableKeycapProps {
+export interface RemovableKeycapProps {
   size: KeycapSize;
   _key: string;
   selected: boolean;
