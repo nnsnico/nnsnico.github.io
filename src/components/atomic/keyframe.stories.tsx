@@ -6,19 +6,20 @@ import { Provider } from 'react-redux';
 
 import { store } from '../../reducer';
 import { keycapSize } from '../../types';
-import RemovableKeycap, { RemovableKeycapProps } from './removableKeycap';
+import KeyFrame, { KeyFrameProps } from './keyframe';
 
 export default {
-  title: 'AirKey/components/molecules/RemovableKeycap',
-  components: RemovableKeycap,
+  title: 'AirKey/components/atomic/KeyFrame',
+  component: KeyFrame,
   argTypes: {
+    pcbViewHeight: { control: 'number', defaultValue: 900 },
+    pcbViewWidth: { control: 'number', defaultValue: 900 },
+    keycapTotalSize: { control: 'number', defaultValue: 15 },
+    position: { defaultValue: { x: 1, y: 1 } },
     size: {
       control: { type: 'select', options: keycapSize },
       defaultValue: '1U',
     },
-    _key: { control: 'number', defaultValue: 1 },
-    selected: { control: 'boolean', defaultValue: false },
-    position: { defaultValue: { x: 1, y: 1 } },
   },
   decorators: [
     (Story): JSX.Element => (
@@ -31,6 +32,4 @@ export default {
   ],
 } as Meta;
 
-export const Primary: Story<RemovableKeycapProps> = (args) => (
-  <RemovableKeycap {...args} />
-);
+export const Primary: Story<KeyFrameProps> = (args) => <KeyFrame {...args} />;

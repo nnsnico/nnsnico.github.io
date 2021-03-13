@@ -7,7 +7,7 @@ import { updateKeycap } from '../../reducer';
 import { Position } from '../../reducer/keyboard';
 import { DragItem, KeycapSize } from '../../types';
 
-interface KeyFrameProps {
+export interface KeyFrameProps {
   pcbViewHeight: number;
   pcbViewWidth: number;
   keycapTotalSize: number;
