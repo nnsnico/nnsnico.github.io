@@ -8,15 +8,15 @@ export const PCBName = {
 export type PCBId = keyof typeof PCBName;
 export type PCBName = typeof PCBName[keyof typeof PCBName];
 
-export interface PCBConfig {
+interface PCBConfig {
   keyframes: KeyFrame[];
-  pcbName: string;
+  pcbName: PCBName;
   width: number;
   height: number;
   keycapTotalWidth: number;
 }
 
-export async function macJis(): Promise<PCBConfig> {
+async function macJis(): Promise<PCBConfig> {
   return {
     keyframes: await getPcb('apple_keyboard_jis.csv'),
     pcbName: PCBName.MacJis,
