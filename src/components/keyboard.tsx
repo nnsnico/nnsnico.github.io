@@ -1,10 +1,12 @@
 import { fold, Option } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import * as O from 'fp-ts/lib/Option';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as B from '../ext/boolean';
-import { MAC_JIS_PCB } from '../keyframes';
+import getPCB from '../pcb';
+import { setPCBSize, initKeyBoard } from '../reducer';
 import { UsedKey } from '../reducer/keyboard';
 import { KeycapSize, RootState } from '../types';
 import KeyFrame from './atomic/keyframe';
@@ -22,6 +24,34 @@ const keyboardStyle: React.CSSProperties = {
 
 const KeyBoard: React.FC = () => {
   const { keyframes } = useSelector((state: RootState) => state.keyboard);
+  const { size, id } = useSelector((state: RootState) => state.pcb);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const setPCB = async (): Promise<void> => {
+      if (O.isSome(id)) {
+        const config = await getPCB(id.value);
+        dispatch(
+          setPCBSize({
+            size: {
+              width: config.width,
+              height: config.height,
+              keycapTotalWidth: config.keycapTotalWidth,
+            },
+          })
+        );
+        dispatch(
+          initKeyBoard({
+            keyboard: {
+              keyframes: config.keyframes,
+              pcbName: config.pcbName,
+            },
+          })
+        );
+      }
+    };
+    setPCB();
+  }, [dispatch, id]);
 
   const block = [];
   let column: JSX.Element[] = [];
@@ -45,14 +75,22 @@ const KeyBoard: React.FC = () => {
           keyframes[i].position.x,
           keyframes[i].position.y
         ),
-        <KeyFrame
-          key={`${keyframes[i].position.x}_${keyframes[i].position.y}`}
-          keycapTotalSize={MAC_JIS_PCB.keycapTotalWidth}
-          position={keyframes[i].position}
-          pcbViewWidth={MAC_JIS_PCB.width}
-          pcbViewHeight={MAC_JIS_PCB.height}
-          size={keyframes[i].size}
-        />
+        pipe(
+          size,
+          O.fold(
+            () => <div />,
+            (pcbSize) => (
+              <KeyFrame
+                key={`${keyframes[i].position.x}_${keyframes[i].position.y}`}
+                keycapTotalSize={pcbSize.keycapTotalWidth}
+                position={keyframes[i].position}
+                pcbViewWidth={pcbSize.width}
+                pcbViewHeight={pcbSize.height}
+                size={keyframes[i].size}
+              />
+            )
+          )
+        )
       )
     );
   }
