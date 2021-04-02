@@ -6,13 +6,20 @@ import {
   TabPanels,
   Tabs,
   Box,
+  Button,
 } from '@chakra-ui/react';
-import React from 'react';
+import { PayloadAction } from '@reduxjs/toolkit';
+import React, { Dispatch } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { PCBName, PCBId } from '../pcb';
+import { setPCBId } from '../reducer';
+import { PCBIdPayload } from '../reducer/pcb';
 import { keycapSize } from '../types';
 import Keycap from './keycap';
 
 const Footer: React.FC = () => {
+  const dispatch = useDispatch();
   return (
     <Flex
       w="100%"
@@ -33,7 +40,7 @@ const Footer: React.FC = () => {
           <TabPanel>
             <Box overflowX="scroll">
               <Flex justify="space-between" padding="1.5rem">
-                {createKeycaps()}
+                {createPCBs(dispatch)}
               </Flex>
             </Box>
           </TabPanel>
@@ -47,6 +54,19 @@ const Footer: React.FC = () => {
     </Flex>
   );
 };
+
+// FIXME: デザインなんとかして
+function createPCBs(
+  dispatch: Dispatch<PayloadAction<PCBIdPayload>>
+): JSX.Element[] {
+  return Object.entries(PCBName).map(([key, value], i) => (
+    <Button
+      key={i}
+      onClick={(): void => dispatch(setPCBId({ id: key as PCBId }))}>
+      {value}
+    </Button>
+  ));
+}
 
 function createKeycaps(): JSX.Element[] {
   return keycapSize.map((cap, index) => (
