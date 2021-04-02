@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { none, Option, some } from 'fp-ts/Option';
+import * as O from 'fp-ts/Option';
 
 import * as B from '../ext/boolean';
-import { MAC_JIS_PCB } from '../keyframes';
 import { KeycapSize } from '../types';
 
 export interface KeyboardState {
@@ -14,7 +13,7 @@ export interface KeyFrame {
   position: Position;
   size: KeycapSize;
   isPut: boolean;
-  keycap: Option<UsedKey>;
+  keycap: O.Option<UsedKey>;
 }
 
 // keyboard上で使用されているkeycapのidと座標
@@ -48,8 +47,8 @@ export interface InitKeyBoardPayload {
 const keyboardSlice = createSlice({
   name: 'keyboard',
   initialState: {
-    keyframes: MAC_JIS_PCB.keyframes,
-    pcbName: MAC_JIS_PCB.pcbName,
+    keyframes: [],
+    pcbName: '',
   } as KeyboardState,
   reducers: {
     initKeyBoard: (
@@ -74,7 +73,7 @@ const keyboardSlice = createSlice({
               position: action.payload.position,
               size: keyframe.size,
               isPut: true,
-              keycap: some(
+              keycap: O.some(
                 Object.assign(action.payload.usedKey, { selected: false })
               ),
             } as KeyFrame,
@@ -82,7 +81,6 @@ const keyboardSlice = createSlice({
           )
         ),
       }),
-
     //選択されたキーキャップをkeyboardから削除する
     removeKeycap: (
       state: KeyboardState,
@@ -97,7 +95,7 @@ const keyboardSlice = createSlice({
               position: action.payload.position,
               size: keyframe.size,
               isPut: false,
-              keycap: none,
+              keycap: O.none,
             } as KeyFrame,
             keyframe
           )
