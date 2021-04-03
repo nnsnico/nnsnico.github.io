@@ -1,10 +1,11 @@
 import { fromNullable } from 'fp-ts/es6/Option';
+import * as O from 'fp-ts/lib/Option';
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { useSelector } from 'react-redux';
 
 import { convertNumberFromUnit } from '../keycapSize';
-import { MAC_JIS_PCB } from '../keyframes';
-import { DragItem, KeycapSize } from '../types';
+import { DragItem, KeycapSize, RootState } from '../types';
 
 export interface KeycapProps {
   _key: string;
@@ -17,41 +18,51 @@ export interface KeycapProps {
 
 const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
   const _key = props._key;
-  const size = props.size.toString();
+  const keycapSize = props.size.toString();
   const isDragedFromTab = fromNullable(props.isDragedFromTab);
+  const { size } = useSelector((state: RootState) => state.pcb);
   const [{ opacity }, dragRef] = useDrag({
-    item: { type: 'keycap', _key, size, isDragedFromTab } as DragItem,
+    item: {
+      type: 'keycap',
+      _key,
+      size: keycapSize,
+      isDragedFromTab,
+    } as DragItem,
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0 : 1,
     }),
   });
 
-  return (
-    <div
-      onClick={props.onClick}
-      ref={dragRef}
-      style={{
-        ...props.styles,
-        position: 'relative',
-        opacity,
-        zIndex: 1,
-      }}>
-      <img
+  if (O.isSome(size)) {
+    return (
+      <div
+        onClick={props.onClick}
+        ref={dragRef}
         style={{
-          width:
-            (MAC_JIS_PCB.width / MAC_JIS_PCB.keycapTotalWidth) *
-            convertNumberFromUnit(props.size),
-          height: MAC_JIS_PCB.height / MAC_JIS_PCB.keycapTotalWidth,
-          maxWidth: 'none',
-        }}
-        src={
-          'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
-        }
-      />
-      <span style={{ position: 'absolute', top: 0 }}>{_key}</span>
-      {props.children}
-    </div>
-  );
+          ...props.styles,
+          position: 'relative',
+          opacity,
+          zIndex: 1,
+        }}>
+        <img
+          style={{
+            width:
+              (size.value.width / size.value.keycapTotalWidth) *
+              convertNumberFromUnit(props.size),
+            height: size.value.height / size.value.keycapTotalWidth,
+            maxWidth: 'none',
+          }}
+          src={
+            'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
+          }
+        />
+        <span style={{ position: 'absolute', top: 0 }}>{_key}</span>
+        {props.children}
+      </div>
+    );
+  } else {
+    return <div />;
+  }
 };
 
 export default Keycap;
