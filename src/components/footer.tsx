@@ -59,9 +59,9 @@ const Footer: React.FC = () => {
 function createPCBs(
   dispatch: Dispatch<PayloadAction<PCBIdPayload>>
 ): JSX.Element[] {
-  return Object.entries(PCBName).map(([key, value], i) => (
+  return Object.entries(PCBName).map(([key, value]) => (
     <Button
-      key={i}
+      key={key}
       onClick={(): void => dispatch(setPCBId({ id: key as PCBId }))}>
       {value}
     </Button>

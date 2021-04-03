@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as B from '../ext/boolean';
 import getPCB from '../pcb';
-import { setPCBSize, initKeyBoard } from '../reducer';
+import { setPCBSize, initKeyBoard, setPCBId } from '../reducer';
 import { UsedKey } from '../reducer/keyboard';
 import { KeycapSize, RootState } from '../types';
 import KeyFrame from './atomic/keyframe';
@@ -28,7 +28,11 @@ const KeyBoard: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const setPCB = async (): Promise<void> => {
+    dispatch(setPCBId({ id: 'MacJis' }));
+  }, [dispatch]);
+
+  useEffect(() => {
+    (async (): Promise<void> => {
       if (O.isSome(id)) {
         const config = await getPCB(id.value);
         dispatch(
@@ -49,8 +53,7 @@ const KeyBoard: React.FC = () => {
           })
         );
       }
-    };
-    setPCB();
+    })();
   }, [dispatch, id]);
 
   const block = [];
