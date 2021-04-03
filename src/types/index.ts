@@ -17,13 +17,11 @@ export const keycapSize = [
   '6U',
   '6.25U',
   '6.5U',
-  'ISOEnter',
+  'ISOEnter_TOP',
+  'ISOEnter_BOTTOM',
 ] as const;
 
-export const isoEnterTopOrBottom = ['TOP', 'BOTTOM'] as const;
-
 export type KeycapSize = typeof keycapSize[number];
-export type ISOEnterTopOrBottom = typeof isoEnterTopOrBottom[number];
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
@@ -44,10 +42,6 @@ export interface KeyFrame {
   size: KeycapSize;
   isPut: boolean;
   keycap: O.Option<UsedKey>;
-}
-
-export interface ISOEnter extends KeyFrame {
-  topOrBottom: ISOEnterTopOrBottom;
 }
 
 // keyboard上で使用されているkeycapのidと座標

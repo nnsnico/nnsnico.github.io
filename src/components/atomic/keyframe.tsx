@@ -21,7 +21,6 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
     canDrop: () => true,
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
-
       if (props.size == item.size) {
         dispatch(
           updateKeycap({
