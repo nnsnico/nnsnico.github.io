@@ -4,8 +4,7 @@ import * as O from 'fp-ts/lib/Option';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
 
-import { KeyFrame } from '../../reducer/keyboard';
-import { KeycapSize } from '../../types';
+import { KeycapSize, KeyFrame } from '../../types';
 
 export default async function getPcb(name: string): Promise<KeyFrame[]> {
   const rawCsvOrError = await readCsvFile(name)();

@@ -7,8 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as B from '../ext/boolean';
 import getPCB from '../pcb';
 import { setPCBSize, initKeyBoard, setPCBId } from '../reducer';
-import { UsedKey } from '../reducer/keyboard';
-import { KeycapSize, RootState } from '../types';
+import { KeycapSize, RootState, UsedKey } from '../types';
 import KeyFrame from './atomic/keyframe';
 import RemovableKeycap from './molecules/removableKeycap';
 

@@ -1,3 +1,4 @@
+import * as O from 'fp-ts/Option';
 import { Option } from 'fp-ts/es6/Option';
 import { DragObjectWithType } from 'react-dnd';
 
@@ -29,3 +30,26 @@ export type DragItem = DragObjectWithType & {
   size: KeycapSize;
   isDragedFromTab: Option<boolean>;
 };
+
+export interface KeyboardState {
+  keyframes: KeyFrame[];
+  pcbName: string;
+}
+
+export interface KeyFrame {
+  position: Position;
+  size: KeycapSize;
+  isPut: boolean;
+  keycap: O.Option<UsedKey>;
+}
+
+// keyboard上で使用されているkeycapのidと座標
+export interface UsedKey {
+  id: string;
+  selected: boolean;
+}
+
+export interface Position {
+  x: number;
+  y: number;
+}

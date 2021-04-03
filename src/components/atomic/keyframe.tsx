@@ -4,8 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { convertNumberFromUnit } from '../../keycapSize';
 import { updateKeycap } from '../../reducer';
-import { Position } from '../../reducer/keyboard';
-import { DragItem, KeycapSize } from '../../types';
+import { DragItem, KeycapSize, Position } from '../../types';
 
 export interface KeyFrameProps {
   pcbViewHeight: number;

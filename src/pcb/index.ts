@@ -1,4 +1,4 @@
-import { KeyFrame } from '../reducer/keyboard';
+import { KeyFrame } from '../types';
 import getPcb from './util/pcbParser';
 
 export const PCBName = {
