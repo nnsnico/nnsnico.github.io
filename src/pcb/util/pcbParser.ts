@@ -4,7 +4,7 @@ import * as O from 'fp-ts/lib/Option';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
 
-import { KeycapSize, KeyFrame } from '../../types';
+import { ISOEnter, KeycapSize, KeyFrame } from '../../types';
 
 export default async function getPcb(name: string): Promise<KeyFrame[]> {
   const rawCsvOrError = await readCsvFile(name)();
@@ -20,14 +20,27 @@ function parseCsv(csvRaw: string): KeyFrame[] {
   const rowToKeyFrames: (y: number, row: string) => KeyFrame[] = (y, row) =>
     pipe(
       row.split(',').filter((v) => v != ''),
-      A.mapWithIndex(
-        (x, size) =>
-          ({
-            position: { x, y },
-            size: toKeycapSize(size),
-            isPut: false,
-            keycap: O.none,
-          } as KeyFrame)
+      A.mapWithIndex((x, size) =>
+        pipe(
+          O.fromNullable(size.match(/ISOEnter_(TOP|BOTTOM)/)),
+          O.fold(
+            () =>
+              ({
+                position: { x, y },
+                size: toKeycapSize(size),
+                isPut: false,
+                keycap: O.none,
+              } as KeyFrame),
+            (matchedArray: RegExpMatchArray) =>
+              ({
+                position: { x, y },
+                size: 'ISOEnter',
+                isPut: false,
+                keycap: O.none,
+                topOrBottom: matchedArray[1],
+              } as ISOEnter)
+          )
+        )
       )
     );
 
