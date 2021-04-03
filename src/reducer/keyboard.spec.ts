@@ -2,9 +2,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { none, some } from 'fp-ts/Option';
 
 import { initKeyBoard, removeKeycap, updateKeycap } from '.';
+import { KeyboardState } from '../types';
 import keyboardSlice, {
   InitKeyBoardPayload,
-  KeyboardState,
   RemoveKeyboardPayload,
   UpdateKeycapPayload,
 } from './keyboard';
