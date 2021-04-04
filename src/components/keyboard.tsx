@@ -1,5 +1,7 @@
+import * as N from 'fp-ts/Eq/';
 import { fold, Option } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
+import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as B from '../ext/boolean';
 import getPCB from '../pcb';
 import { setPCBSize, initKeyBoard, setPCBId } from '../reducer';
-import { UsedKey } from '../reducer/keyboard';
+import { KeyFrame as KeyFrameType, UsedKey } from '../reducer/keyboard';
+import { PCBSize } from '../reducer/pcb';
 import { KeycapSize, RootState } from '../types';
 import KeyFrame from './atomic/keyframe';
 import RemovableKeycap from './molecules/removableKeycap';
@@ -56,55 +59,58 @@ const KeyBoard: React.FC = () => {
     })();
   }, [dispatch, id]);
 
-  const block = [];
-  let column: JSX.Element[] = [];
-  let y = 0;
-  for (let i = 0; i < keyframes.length; i++) {
-    if (y != keyframes[i].position.y) {
-      y = keyframes[i].position.y;
-      block.push(
-        <div key={`column_${y}`} style={{ display: 'flex' }}>
-          {column}
-        </div>
-      );
-      column = [];
-    }
-    column.push(
-      B.fold(
-        keyframes[i].isPut,
-        renderKeycap(
-          keyframes[i].keycap,
-          keyframes[i].size,
-          keyframes[i].position.x,
-          keyframes[i].position.y
-        ),
-        pipe(
-          size,
-          O.fold(
-            () => <div />,
-            (pcbSize) => (
-              <KeyFrame
-                key={`${keyframes[i].position.x}_${keyframes[i].position.y}`}
-                keycapTotalSize={pcbSize.keycapTotalWidth}
-                position={keyframes[i].position}
-                pcbViewWidth={pcbSize.width}
-                pcbViewHeight={pcbSize.height}
-                size={keyframes[i].size}
-              />
-            )
-          )
-        )
+  const rowKeyframes = pipe(
+    A.bindTo('y')(
+      pipe(
+        keyframes.map((v) => v.position.y),
+        A.uniq(N.eqNumber)
       )
-    );
-  }
-  block.push(
-    <div key={`column_${y + 1}`} style={{ display: 'flex' }}>
-      {column}
-    </div>
+    ),
+    A.map((v) => (
+      <div key={`column_${v.y + 1}`} style={{ display: 'flex' }}>
+        {pipe(
+          keyframes.filter((keyframe) => keyframe.position.y == v.y),
+          A.map((v) => renderKeyframe(v, size))
+        )}
+      </div>
+    ))
   );
 
-  return <div style={{ ...wrappedDivStyle, ...keyboardStyle }}>{block}</div>;
+  return (
+    <div style={{ ...wrappedDivStyle, ...keyboardStyle }}>{rowKeyframes}</div>
+  );
 };
+
+function renderKeyframe(
+  keyframe: KeyFrameType,
+  size: Option<PCBSize>
+): JSX.Element {
+  return B.fold(
+    keyframe.isPut,
+    renderKeycap(
+      keyframe.keycap,
+      keyframe.size,
+      keyframe.position.x,
+      keyframe.position.y
+    ),
+    pipe(
+      size,
+      O.fold(
+        () => <div />,
+        (pcbSize) => (
+          <KeyFrame
+            key={`${keyframe.position.x}_${keyframe.position.y}`}
+            keycapTotalSize={pcbSize.keycapTotalWidth}
+            position={keyframe.position}
+            pcbViewWidth={pcbSize.width}
+            pcbViewHeight={pcbSize.height}
+            size={keyframe.size}
+          />
+        )
+      )
+    )
+  );
+}
 
 function renderKeycap(
   maybeUsedKey: Option<UsedKey>,
