@@ -25,9 +25,10 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
       const item = monitor.getItem() as DragItem;
 
       if (props.size == item.size) {
-        if (props.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
+        if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
+          console.log('ara');
           //ISOEnter
-          ISOEnter(
+          putISOEnter(
             dispatch,
             props.position,
             props.size as 'ISOEnter_TOP' | 'ISOEnter_BOTTOM'
@@ -45,9 +46,9 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
             })
           );
         }
-      } else if (props.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
+      } else if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
         //ISOEnter
-        ISOEnter(
+        putISOEnter(
           dispatch,
           props.position,
           props.size as 'ISOEnter_TOP' | 'ISOEnter_BOTTOM'
@@ -69,7 +70,7 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
     </div>
   );
 
-  function ISOEnter(
+  function putISOEnter(
     dispatch: Dispatch<PayloadAction<UpdateKeycapPayload>>,
     position: Position,
     ISOEnterSize: 'ISOEnter_TOP' | 'ISOEnter_BOTTOM'
@@ -80,7 +81,7 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
           size: 'ISOEnter_TOP',
           position: position,
           usedKey: {
-            id: 'ISOEnter_TOP',
+            id: 'ISOEnter',
             selected: false,
           },
         })
@@ -107,7 +108,7 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
             y: position.y - 1,
           },
           usedKey: {
-            id: 'ISOEnter_TOP',
+            id: 'ISOEnter',
             selected: false,
           },
         })

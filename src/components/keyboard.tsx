@@ -17,7 +17,8 @@ import {
   UsedKey,
 } from '../types';
 import KeyFrame from './atomic/keyframe';
-import RemovableKeycap from './molecules/removableKeycap';
+import ISOEnterKeycap from './isoEnterKeycap';
+import Keycap from './keycap';
 
 const wrappedDivStyle: React.CSSProperties = {
   position: 'absolute',
@@ -126,15 +127,17 @@ function renderKeycap(
     maybeUsedKey,
     fold(
       () => <div />,
-      (usedKey) => (
-        <RemovableKeycap
-          key={`${usedKey.id}_${x}_${y}`}
-          _key={usedKey.id}
-          size={size}
-          selected={usedKey.selected}
-          position={{ x, y }}
-        />
-      )
+      (usedKey) => {
+        if (usedKey.id == 'ISOEnter') {
+          return (
+            <ISOEnterKeycap _key={`${usedKey.id}_${x}_${y}`} size={size} />
+          );
+        } else if (usedKey.id == 'ISOEnter_BOTTOM') {
+          return <div />;
+        } else {
+          return <Keycap _key={`${usedKey.id}_${x}_${y}`} size={size} />;
+        }
+      }
     )
   );
 }

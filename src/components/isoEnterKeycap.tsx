@@ -37,45 +37,47 @@ const ISOEnterKeycap: React.FC<ISOEnterKeycapProps> = (
 
   if (O.isSome(size)) {
     return (
-      <div
-        onClick={props.onClick}
-        ref={dragRef}
-        style={{
-          ...props.styles,
-          position: 'relative',
-          opacity,
-          zIndex: 1,
-        }}>
-        <div style={{ textAlign: 'right' }}>
-          <img
-            style={{
-              width:
-                (size.value.pixelWidth / size.value.rowTotalUnitSize) *
-                convertNumberFromUnit('ISOEnter_TOP'),
-              height: size.value.pixelHeight / size.value.rowTotalUnitSize,
-              maxWidth: 'none',
-              display: 'inline-block',
-            }}
-            src={
-              'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
-            }
-          />
-          <img
-            style={{
-              width:
-                (size.value.pixelWidth / size.value.rowTotalUnitSize) *
-                convertNumberFromUnit('ISOEnter_BOTTOM'),
-              height: size.value.pixelHeight / size.value.rowTotalUnitSize,
-              maxWidth: 'none',
-              display: 'inline-block',
-            }}
-            src={
-              'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
-            }
-          />
+      <div style={{ position: 'relative' }}>
+        <div
+          onClick={props.onClick}
+          ref={dragRef}
+          style={{
+            ...props.styles,
+            position: 'absolute',
+            opacity,
+            zIndex: 1,
+          }}>
+          <div style={{ textAlign: 'right' }}>
+            <img
+              style={{
+                width:
+                  (size.value.pixelWidth / size.value.rowTotalUnitSize) *
+                  convertNumberFromUnit('ISOEnter_TOP'),
+                height: size.value.pixelHeight / size.value.rowTotalUnitSize,
+                maxWidth: 'none',
+                display: 'inline-block',
+              }}
+              src={
+                'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
+              }
+            />
+            <img
+              style={{
+                width:
+                  (size.value.pixelWidth / size.value.rowTotalUnitSize) *
+                  convertNumberFromUnit('ISOEnter_BOTTOM'),
+                height: size.value.pixelHeight / size.value.rowTotalUnitSize,
+                maxWidth: 'none',
+                display: 'inline-block',
+              }}
+              src={
+                'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
+              }
+            />
+          </div>
+          <span style={{ position: 'absolute', top: 0 }}>ISOEnter</span>
+          {props.children}
         </div>
-        <span style={{ position: 'absolute', top: 0 }}>ISOEnter</span>
-        {props.children}
       </div>
     );
   } else {
