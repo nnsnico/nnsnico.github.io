@@ -132,6 +132,7 @@ function renderKeycap(
           return (
             <ISOEnterKeycap _key={`${usedKey.id}_${x}_${y}`} size={size} />
           );
+          //TODO 直したい =3
         } else if (usedKey.id == 'ISOEnter_BOTTOM') {
           return <div />;
         } else {
