@@ -37,9 +37,9 @@ const KeyBoard: React.FC = () => {
         dispatch(
           setPCBSize({
             size: {
-              width: config.width,
-              height: config.height,
-              keycapTotalWidth: config.keycapTotalWidth,
+              pixelWidth: config.pixelWidth,
+              pixelHeight: config.pixelHeight,
+              rowTotalUnitSize: config.rowTotalUnitSize,
             },
           })
         );
@@ -84,10 +84,10 @@ const KeyBoard: React.FC = () => {
             (pcbSize) => (
               <KeyFrame
                 key={`${keyframes[i].position.x}_${keyframes[i].position.y}`}
-                keycapTotalSize={pcbSize.keycapTotalWidth}
+                keycapTotalSize={pcbSize.rowTotalUnitSize}
                 position={keyframes[i].position}
-                pcbViewWidth={pcbSize.width}
-                pcbViewHeight={pcbSize.height}
+                pcbViewWidth={pcbSize.pixelWidth}
+                pcbViewHeight={pcbSize.pixelHeight}
                 size={keyframes[i].size}
               />
             )
