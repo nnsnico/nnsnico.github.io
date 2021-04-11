@@ -46,7 +46,11 @@ const Footer: React.FC = () => {
             </Box>
           </TabPanel>
           <TabPanel>
-            <Flex justify="space-between" overflowX="scroll" padding="1.5rem">
+            <Flex
+              justify="space-between"
+              overflowX="scroll"
+              padding="1.5rem"
+              minH="200px">
               {createKeycaps()}
             </Flex>
           </TabPanel>
@@ -77,12 +81,18 @@ function createKeycaps(): (JSX.Element | null)[] {
           key={index.toString()}
           _key={cap}
           size={cap}
-          isDragedFromTab
+          isDraggedFromTab
         />
       );
     } else if (cap != 'ISOEnter_BOTTOM') {
       return (
-        <Keycap key={index.toString()} _key={cap} size={cap} isDragedFromTab />
+        <Keycap
+          key={index.toString()}
+          _key={cap}
+          size={cap}
+          isDragedFromTab
+          styles={{ margin: 'auto' }}
+        />
       );
     } else {
       return null;
