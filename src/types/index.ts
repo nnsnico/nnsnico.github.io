@@ -32,11 +32,6 @@ export type DragItem = DragObjectWithType & {
   isDragedFromTab: Option<boolean>;
 };
 
-export interface KeyboardState {
-  keyframes: KeyFrame[];
-  pcbName: string;
-}
-
 export interface KeyFrame {
   position: Position;
   size: KeycapSize;

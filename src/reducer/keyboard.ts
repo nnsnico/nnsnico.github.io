@@ -2,17 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as O from 'fp-ts/Option';
 
 import * as B from '../ext/boolean';
-import {
-  KeyboardState,
-  KeycapSize,
-  KeyFrame,
-  Position,
-  UsedKey,
-} from '../types';
+import { KeycapSize, KeyFrame, Position, UsedKey } from '../types';
 
 //
 // action payload
 //
+export interface KeyboardState {
+  keyframes: KeyFrame[];
+  pcbName: string;
+}
 export interface UpdateKeycapPayload {
   position: Position;
   usedKey: UsedKey;
