@@ -24,9 +24,9 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
 
+      //keyframeとkeycapのサイズが一致した時
       if (props.size == item.size) {
         if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
-          //ISOEnter
           putISOEnter(
             dispatch,
             props.position,
@@ -45,8 +45,9 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
             })
           );
         }
-      } else if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
-        //ISOEnter
+      }
+      //ISOEnter_BOTTOMのkeyframeにISOEnter_TOPのkeycapが当てられた時、もしくはその逆
+      else if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
         putISOEnter(
           dispatch,
           props.position,
