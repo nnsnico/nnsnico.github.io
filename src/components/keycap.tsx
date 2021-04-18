@@ -13,7 +13,6 @@ export interface KeycapProps {
   styles?: React.CSSProperties;
   isDragedFromTab?: boolean;
   onClick?: () => void;
-  children?: React.ReactNode;
 }
 
 const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
@@ -47,9 +46,9 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
         <img
           style={{
             width:
-              (size.value.width / size.value.keycapTotalWidth) *
+              (size.value.pixelWidth / size.value.rowTotalUnitSize) *
               convertNumberFromUnit(props.size),
-            height: size.value.height / size.value.keycapTotalWidth,
+            height: size.value.pixelHeight / size.value.rowTotalUnitSize,
             maxWidth: 'none',
           }}
           src={
@@ -57,7 +56,6 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
           }
         />
         <span style={{ position: 'absolute', top: 0 }}>{_key}</span>
-        {props.children}
       </div>
     );
   } else {

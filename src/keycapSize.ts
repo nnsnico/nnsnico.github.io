@@ -26,7 +26,9 @@ export function convertNumberFromUnit(keycapSize: KeycapSize): number {
       return 6.25;
     case '6.5U':
       return 6.5;
-    case 'ISOEnter':
+    case 'ISOEnter_TOP':
       return 1.5;
+    case 'ISOEnter_BOTTOM':
+      return 1.25;
   }
 }

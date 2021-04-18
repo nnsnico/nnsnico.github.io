@@ -3,8 +3,8 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { removeKeycap } from '../reducer';
-import { Position, RemoveKeyboardPayload } from '../reducer/keyboard';
-import { KeycapSize } from '../types';
+import { RemoveKeyboardPayload } from '../reducer/keyboard';
+import { KeycapSize, Position } from '../types';
 
 interface RemoveButtonProps {
   size: KeycapSize;

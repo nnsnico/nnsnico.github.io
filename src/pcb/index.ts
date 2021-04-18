@@ -1,4 +1,4 @@
-import { KeyFrame } from '../reducer/keyboard';
+import { KeyFrame } from '../types';
 import getPcb from './util/pcbParser';
 
 export const PCBName = {
@@ -11,18 +11,18 @@ export type PCBName = typeof PCBName[keyof typeof PCBName];
 interface PCBConfig {
   keyframes: KeyFrame[];
   pcbName: PCBName;
-  width: number;
-  height: number;
-  keycapTotalWidth: number;
+  pixelWidth: number;
+  pixelHeight: number;
+  rowTotalUnitSize: number;
 }
 
 async function macJis(): Promise<PCBConfig> {
   return {
     keyframes: await getPcb('apple_keyboard_jis.csv'),
     pcbName: PCBName.MacJis,
-    width: 1000,
-    height: 1000,
-    keycapTotalWidth: 14.5,
+    pixelWidth: 1000,
+    pixelHeight: 1000,
+    rowTotalUnitSize: 14.5,
   };
 }
 

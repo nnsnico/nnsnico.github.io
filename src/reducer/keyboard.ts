@@ -2,34 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as O from 'fp-ts/Option';
 
 import * as B from '../ext/boolean';
-import { KeycapSize } from '../types';
-
-export interface KeyboardState {
-  keyframes: KeyFrame[];
-  pcbName: string;
-}
-
-export interface KeyFrame {
-  position: Position;
-  size: KeycapSize;
-  isPut: boolean;
-  keycap: O.Option<UsedKey>;
-}
-
-// keyboard上で使用されているkeycapのidと座標
-export interface UsedKey {
-  id: string;
-  selected: boolean;
-}
-
-export interface Position {
-  x: number;
-  y: number;
-}
+import { KeycapSize, KeyFrame, Position, UsedKey } from '../types';
 
 //
 // action payload
 //
+export interface KeyboardState {
+  keyframes: KeyFrame[];
+  pcbName: string;
+}
 export interface UpdateKeycapPayload {
   position: Position;
   usedKey: UsedKey;

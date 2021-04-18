@@ -8,12 +8,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as B from '../ext/boolean';
 import getPCB from '../pcb';
-import { setPCBSize, initKeyBoard, setPCBId } from '../reducer';
-import { KeyFrame as KeyFrameType, UsedKey } from '../reducer/keyboard';
+import { initKeyBoard, setPCBId, setPCBSize } from '../reducer';
 import { PCBSize } from '../reducer/pcb';
-import { KeycapSize, RootState } from '../types';
+import {
+  KeycapSize,
+  KeyFrame as KeyFrameType,
+  RootState,
+  UsedKey,
+} from '../types';
 import KeyFrame from './atomic/keyframe';
-import RemovableKeycap from './molecules/removableKeycap';
+import ISOEnterKeycap from './isoEnterKeycap';
+import Keycap from './keycap';
 
 const wrappedDivStyle: React.CSSProperties = {
   position: 'absolute',
@@ -41,9 +46,9 @@ const KeyBoard: React.FC = () => {
         dispatch(
           setPCBSize({
             size: {
-              width: config.width,
-              height: config.height,
-              keycapTotalWidth: config.keycapTotalWidth,
+              pixelWidth: config.pixelWidth,
+              pixelHeight: config.pixelHeight,
+              rowTotalUnitSize: config.rowTotalUnitSize,
             },
           })
         );
@@ -100,10 +105,10 @@ function renderKeyframe(
         (pcbSize) => (
           <KeyFrame
             key={`${keyframe.position.x}_${keyframe.position.y}`}
-            keycapTotalSize={pcbSize.keycapTotalWidth}
+            keycapTotalSize={pcbSize.rowTotalUnitSize}
             position={keyframe.position}
-            pcbViewWidth={pcbSize.width}
-            pcbViewHeight={pcbSize.height}
+            pcbViewWidth={pcbSize.pixelWidth}
+            pcbViewHeight={pcbSize.pixelHeight}
             size={keyframe.size}
           />
         )
@@ -122,15 +127,18 @@ function renderKeycap(
     maybeUsedKey,
     fold(
       () => <div />,
-      (usedKey) => (
-        <RemovableKeycap
-          key={`${usedKey.id}_${x}_${y}`}
-          _key={usedKey.id}
-          size={size}
-          selected={usedKey.selected}
-          position={{ x, y }}
-        />
-      )
+      (usedKey) => {
+        if (usedKey.id == 'ISOEnter') {
+          return (
+            <ISOEnterKeycap _key={`${usedKey.id}_${x}_${y}`} size={size} />
+          );
+          //TODO 直したい =3
+        } else if (usedKey.id == 'ISOEnter_BOTTOM') {
+          return <div />;
+        } else {
+          return <Keycap _key={`${usedKey.id}_${x}_${y}`} size={size} />;
+        }
+      }
     )
   );
 }

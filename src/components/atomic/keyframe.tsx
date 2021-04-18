@@ -1,11 +1,12 @@
-import React from 'react';
+import { PayloadAction } from '@reduxjs/toolkit';
+import React, { Dispatch } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch } from 'react-redux';
 
 import { convertNumberFromUnit } from '../../keycapSize';
 import { updateKeycap } from '../../reducer';
-import { Position } from '../../reducer/keyboard';
-import { DragItem, KeycapSize } from '../../types';
+import { UpdateKeycapPayload } from '../../reducer/keyboard';
+import { DragItem, KeycapSize, Position } from '../../types';
 
 export interface KeyFrameProps {
   pcbViewHeight: number;
@@ -23,16 +24,34 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
     drop: (_, monitor) => {
       const item = monitor.getItem() as DragItem;
 
+      //keyframeとkeycapのサイズが一致した時
       if (props.size == item.size) {
-        dispatch(
-          updateKeycap({
-            size: props.size,
-            position: props.position,
-            usedKey: {
-              id: item._key,
-              selected: false,
-            },
-          })
+        if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
+          putISOEnter(
+            dispatch,
+            props.position,
+            props.size as 'ISOEnter_TOP' | 'ISOEnter_BOTTOM'
+          );
+          return;
+        } else {
+          return dispatch(
+            updateKeycap({
+              size: props.size,
+              position: props.position,
+              usedKey: {
+                id: item._key,
+                selected: false,
+              },
+            })
+          );
+        }
+      }
+      //ISOEnter_BOTTOMのkeyframeにISOEnter_TOPのkeycapが当てられた時、もしくはその逆
+      else if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
+        putISOEnter(
+          dispatch,
+          props.position,
+          props.size as 'ISOEnter_TOP' | 'ISOEnter_BOTTOM'
         );
       }
     },
@@ -50,5 +69,61 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
       {props.size}
     </div>
   );
+
+  function putISOEnter(
+    dispatch: Dispatch<PayloadAction<UpdateKeycapPayload>>,
+    position: Position,
+    ISOEnterSize: 'ISOEnter_TOP' | 'ISOEnter_BOTTOM'
+  ): void {
+    if (ISOEnterSize.includes('TOP')) {
+      dispatch(
+        updateKeycap({
+          size: 'ISOEnter_TOP',
+          position: position,
+          usedKey: {
+            id: 'ISOEnter',
+            selected: false,
+          },
+        })
+      );
+      dispatch(
+        updateKeycap({
+          size: 'ISOEnter_BOTTOM',
+          position: {
+            x: position.x,
+            y: position.y + 1,
+          },
+          usedKey: {
+            id: 'ISOEnter_BOTTOM',
+            selected: false,
+          },
+        })
+      );
+    } else {
+      dispatch(
+        updateKeycap({
+          size: 'ISOEnter_TOP',
+          position: {
+            x: position.x,
+            y: position.y - 1,
+          },
+          usedKey: {
+            id: 'ISOEnter',
+            selected: false,
+          },
+        })
+      );
+      dispatch(
+        updateKeycap({
+          size: 'ISOEnter_BOTTOM',
+          position: position,
+          usedKey: {
+            id: 'ISOEnter_BOTTOM',
+            selected: false,
+          },
+        })
+      );
+    }
+  }
 };
 export default KeyFrame;

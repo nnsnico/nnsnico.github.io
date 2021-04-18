@@ -9,9 +9,9 @@ export interface PCBState {
 }
 
 export interface PCBSize {
-  width: number;
-  height: number;
-  keycapTotalWidth: number;
+  pixelWidth: number;
+  pixelHeight: number;
+  rowTotalUnitSize: number;
 }
 
 export interface PCBIdPayload {
