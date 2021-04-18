@@ -26,7 +26,6 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
 
       if (props.size == item.size) {
         if (item.size.match(/ISOEnter_(TOP|BOTTOM)/)) {
-          console.log('ara');
           //ISOEnter
           putISOEnter(
             dispatch,
