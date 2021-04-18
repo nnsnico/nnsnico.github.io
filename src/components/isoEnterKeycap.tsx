@@ -10,10 +10,7 @@ import { DragItem, KeycapSize, RootState } from '../types';
 export interface ISOEnterKeycapProps {
   _key: string;
   size: KeycapSize;
-  styles?: React.CSSProperties;
   isDraggedFromTab?: boolean;
-  onClick?: () => void;
-  children?: React.ReactNode;
 }
 
 const ISOEnterKeycap: React.FC<ISOEnterKeycapProps> = (
@@ -39,10 +36,8 @@ const ISOEnterKeycap: React.FC<ISOEnterKeycapProps> = (
     return (
       <div style={{ position: 'relative' }}>
         <div
-          onClick={props.onClick}
           ref={dragRef}
           style={{
-            ...props.styles,
             position: 'absolute',
             opacity,
             zIndex: 1,
@@ -76,7 +71,6 @@ const ISOEnterKeycap: React.FC<ISOEnterKeycapProps> = (
             />
           </div>
           <span style={{ position: 'absolute', top: 0 }}>ISOEnter</span>
-          {props.children}
         </div>
       </div>
     );

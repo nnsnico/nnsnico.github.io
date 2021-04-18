@@ -10,10 +10,8 @@ import { DragItem, KeycapSize, RootState } from '../types';
 export interface KeycapProps {
   _key: string;
   size: KeycapSize;
-  styles?: React.CSSProperties;
   isDragedFromTab?: boolean;
   onClick?: () => void;
-  children?: React.ReactNode;
 }
 
 const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
@@ -39,7 +37,6 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
         onClick={props.onClick}
         ref={dragRef}
         style={{
-          ...props.styles,
           position: 'relative',
           opacity,
           zIndex: 1,
@@ -57,7 +54,6 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
           }
         />
         <span style={{ position: 'absolute', top: 0 }}>{_key}</span>
-        {props.children}
       </div>
     );
   } else {
