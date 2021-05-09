@@ -64,10 +64,9 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
           (props.pcbViewWidth / props.keycapTotalSize) *
           convertNumberFromUnit(props.size),
         height: props.pcbViewHeight / props.keycapTotalSize,
-        backgroundColor: 'red',
-      }}>
-      {props.size}
-    </div>
+        border: '1px solid gray',
+      }}
+    />
   );
 
   function putISOEnter(

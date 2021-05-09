@@ -20,14 +20,13 @@ import KeyFrame from './atomic/keyframe';
 import ISOEnterKeycap from './isoEnterKeycap';
 import Keycap from './keycap';
 
-const wrappedDivStyle: React.CSSProperties = {
+const keyBoardDivStyle: React.CSSProperties = {
+  top: '50%',
+  left: '50%',
+  zIndex: 1000,
+  transform: 'translate(-50%,-50%)',
   position: 'absolute',
-  top: 0,
-  zIndex: -1,
-};
-
-const keyboardStyle: React.CSSProperties = {
-  marginTop: '80px',
+  border: '1px solid black',
 };
 
 const KeyBoard: React.FC = () => {
@@ -82,7 +81,13 @@ const KeyBoard: React.FC = () => {
   );
 
   return (
-    <div style={{ ...wrappedDivStyle, ...keyboardStyle }}>{rowKeyframes}</div>
+    <div
+      style={{
+        flex: 1,
+        position: 'relative',
+      }}>
+      <div style={{ ...keyBoardDivStyle }}>{rowKeyframes}</div>
+    </div>
   );
 };
 

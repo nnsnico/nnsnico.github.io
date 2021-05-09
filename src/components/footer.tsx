@@ -24,7 +24,6 @@ const Footer: React.FC = () => {
   return (
     <Flex
       w="100%"
-      pos="fixed"
       bottom="0"
       align="center"
       justify="space-between"

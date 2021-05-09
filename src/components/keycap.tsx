@@ -55,7 +55,6 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
             'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
           }
         />
-        <span style={{ position: 'absolute', top: 0 }}>{_key}</span>
       </div>
     );
   } else {
