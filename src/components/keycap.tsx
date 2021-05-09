@@ -4,7 +4,10 @@ import React from 'react';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
 
-import { convertNumberFromUnit } from '../keycapSize';
+import {
+  convertKeyCapSizeToColor,
+  convertNumberFromUnit,
+} from '../keycapConverter';
 import { DragItem, KeycapSize, RootState } from '../types';
 
 export interface KeycapProps {
@@ -43,18 +46,19 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
           opacity,
           zIndex: 1,
         }}>
-        <img
+        <div
           style={{
             width:
               (size.value.pixelWidth / size.value.rowTotalUnitSize) *
               convertNumberFromUnit(props.size),
             height: size.value.pixelHeight / size.value.rowTotalUnitSize,
             maxWidth: 'none',
+            backgroundColor: convertKeyCapSizeToColor(props.size),
+            border: '1px solid gray',
+            boxSizing: 'border-box',
           }}
-          src={
-            'https://1.bp.blogspot.com/-YnNw0nmy5WY/X5OcdKUoDhI/AAAAAAABb-w/Ws-6a4R4Io4IAWwuxtx8ilCxY9RgmKGHgCNcBGAsYHQ/s450/nature_ocean_kaisou.png'
-          }
         />
+        <span style={{ position: 'absolute', top: 0 }}>{keycapSize}</span>
       </div>
     );
   } else {

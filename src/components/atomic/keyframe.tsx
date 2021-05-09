@@ -3,7 +3,7 @@ import React, { Dispatch } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch } from 'react-redux';
 
-import { convertNumberFromUnit } from '../../keycapSize';
+import { convertNumberFromUnit } from '../../keycapConverter';
 import { updateKeycap } from '../../reducer';
 import { UpdateKeycapPayload } from '../../reducer/keyboard';
 import { DragItem, KeycapSize, Position } from '../../types';
@@ -65,8 +65,9 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
           convertNumberFromUnit(props.size),
         height: props.pcbViewHeight / props.keycapTotalSize,
         border: '1px solid gray',
-      }}
-    />
+      }}>
+      <span>{props.size}</span>
+    </div>
   );
 
   function putISOEnter(
