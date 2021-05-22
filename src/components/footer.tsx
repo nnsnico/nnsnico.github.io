@@ -24,7 +24,6 @@ const Footer: React.FC = () => {
   return (
     <Flex
       w="100%"
-      pos="fixed"
       bottom="0"
       align="center"
       justify="space-between"
@@ -86,13 +85,15 @@ function createKeycaps(): (JSX.Element | null)[] {
       );
     } else if (cap != 'ISOEnter_BOTTOM') {
       return (
-        <Keycap
-          key={index.toString()}
-          _key={cap}
-          size={cap}
-          isDragedFromTab
-          styles={{ margin: 'auto' }}
-        />
+        <div style={{ marginRight: '16px' }}>
+          <Keycap
+            key={index.toString()}
+            _key={cap}
+            size={cap}
+            isDragedFromTab
+            styles={{ margin: 'auto' }}
+          />
+        </div>
       );
     } else {
       return null;

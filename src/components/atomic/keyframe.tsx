@@ -3,7 +3,7 @@ import React, { Dispatch } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch } from 'react-redux';
 
-import { convertNumberFromUnit } from '../../keycapSize';
+import { convertNumberFromUnit } from '../../keycapConverter';
 import { updateKeycap } from '../../reducer';
 import { UpdateKeycapPayload } from '../../reducer/keyboard';
 import { DragItem, KeycapSize, Position } from '../../types';
@@ -64,9 +64,9 @@ const KeyFrame: React.FC<KeyFrameProps> = (props: KeyFrameProps) => {
           (props.pcbViewWidth / props.keycapTotalSize) *
           convertNumberFromUnit(props.size),
         height: props.pcbViewHeight / props.keycapTotalSize,
-        backgroundColor: 'red',
+        border: '1px solid gray',
       }}>
-      {props.size}
+      <span>{props.size}</span>
     </div>
   );
 
