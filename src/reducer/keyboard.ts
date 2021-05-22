@@ -1,100 +1,87 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import produce from 'immer';
+import * as O from 'fp-ts/Option';
 
-import { KeycapSize } from '../types';
+import * as B from '../ext/boolean';
+import { KeycapSize, KeyFrame, Position, UsedKey } from '../types';
 
-// keyboard上に設置されているKeycapのリスト
+//
+// action payload
+//
 export interface KeyboardState {
-  putKeycaps: Keycap[];
+  keyframes: KeyFrame[];
+  pcbName: string;
 }
-
-// sizeをキーにして同じsizeのkeycapを管理している
-interface Keycap {
+export interface UpdateKeycapPayload {
+  position: Position;
+  usedKey: UsedKey;
   size: KeycapSize;
-  usedKeys: UsedKey[];
 }
 
-// keyboard上で使用されているkeycapのidと座標
-interface UsedKey {
-  id: string;
+export interface RemoveKeyboardPayload {
   position: Position;
 }
 
-interface Position {
-  x: number;
-  y: number;
-}
-
-// action payload
-export interface KeyboardPayload {
-  size: KeycapSize;
-  usedKey: UsedKey;
+export interface InitKeyBoardPayload {
+  keyboard: KeyboardState;
 }
 
 const keyboardSlice = createSlice({
   name: 'keyboard',
-  initialState: { putKeycaps: [] } as KeyboardState,
+  initialState: {
+    keyframes: [],
+    pcbName: '',
+  } as KeyboardState,
   reducers: {
-    insertKeyCap: (
-      state: KeyboardState,
-      action: PayloadAction<KeyboardPayload>
+    initKeyBoard: (
+      _: KeyboardState,
+      action: PayloadAction<InitKeyBoardPayload>
     ): KeyboardState => {
-      const newPutKeycaps: Keycap[] =
-        // keyboard上で配置されているkeycapのsizeと同じか
-        state.putKeycaps.filter((v) => v.size === action.payload.size)
-          .length === 0
-          ? // Keyboard上にないsizeのkeycapであれば、新規作成
-            // state.putkeycap内のusedKeysに追加
-            produce(state.putKeycaps, (draft) => {
-              const newUsedKeycaps = produce(
-                // sizeが一致しているobjectからusedKeysだけ抽出して追加
-                draft
-                  .filter((v) => v.size === action.payload.size)
-                  .flatMap((v) => v.usedKeys),
-                (draftUsedKeys) => {
-                  draftUsedKeys.push(action.payload.usedKey);
-                }
-              );
-              draft.push({
-                size: action.payload.size,
-                usedKeys: newUsedKeycaps,
-              });
-            })
-          : // keyboard上に既にあるsizeならばsizeをもとにusedKeysに追加
-            state.putKeycaps.map((keycap) =>
-              keycap.size === action.payload.size
-                ? produce(keycap, (draft) => {
-                    draft.usedKeys.push(action.payload.usedKey);
-                  })
-                : keycap
-            );
-
-      return produce(state, (draft) => {
-        draft.putKeycaps = newPutKeycaps;
-      });
+      return action.payload.keyboard;
     },
-    updateKeyCapPosition: (
+
+    // update keycap
+    updateKeycap: (
       state: KeyboardState,
-      action: PayloadAction<KeyboardPayload>
-    ): KeyboardState => {
-      // 新しくputkeycapsを作る
-      const newPutKeycaps: Keycap[] = state.putKeycaps.flatMap((putKeycap) => {
-        // idが一致していればusedKeyをそのまんま入れ替える
-        const newUsedKeycaps = putKeycap.usedKeys.map((usedKey) =>
-          usedKey.id === action.payload.usedKey.id
-            ? action.payload.usedKey
-            : usedKey
-        );
-        return produce(putKeycap, (draftPutKeycap) => {
-          draftPutKeycap.usedKeys = newUsedKeycaps;
-        });
-      });
-
-      return produce(state, (draft) => {
-        draft.putKeycaps = newPutKeycaps;
-      });
-    },
+      action: PayloadAction<UpdateKeycapPayload>
+    ): KeyboardState =>
+      Object.assign(state, {
+        keyframes: state.keyframes.map((keyframe) =>
+          B.fold(
+            keyframe.position.x == action.payload.position.x &&
+              keyframe.position.y == action.payload.position.y &&
+              keyframe.size == action.payload.size,
+            {
+              position: action.payload.position,
+              size: keyframe.size,
+              isPut: true,
+              keycap: O.some(
+                Object.assign(action.payload.usedKey, { selected: false })
+              ),
+            } as KeyFrame,
+            keyframe
+          )
+        ),
+      }),
+    //選択されたキーキャップをkeyboardから削除する
+    removeKeycap: (
+      state: KeyboardState,
+      action: PayloadAction<RemoveKeyboardPayload>
+    ): KeyboardState =>
+      Object.assign(state, {
+        keyframes: state.keyframes.map((keyframe) =>
+          B.fold(
+            keyframe.position.x === action.payload.position.x &&
+              keyframe.position.y === action.payload.position.y,
+            {
+              position: action.payload.position,
+              size: keyframe.size,
+              isPut: false,
+              keycap: O.none,
+            } as KeyFrame,
+            keyframe
+          )
+        ),
+      }),
   },
 });
-
 export default keyboardSlice;

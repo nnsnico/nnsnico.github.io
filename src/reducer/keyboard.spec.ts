@@ -1,214 +1,312 @@
-import { insertKeyCap, updateKeyCapPosition } from '.';
-import keyboardSlice, { KeyboardPayload, KeyboardState } from './keyboard';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { none, some } from 'fp-ts/Option';
+
+import { initKeyBoard, removeKeycap, updateKeycap } from '.';
+import keyboardSlice, {
+  InitKeyBoardPayload,
+  KeyboardState,
+  RemoveKeyboardPayload,
+  UpdateKeycapPayload,
+} from './keyboard';
 
 const stateFixture: KeyboardState = {
-  putKeycaps: [
+  keyframes: [
     {
-      size: '2U',
-      usedKeys: [
-        {
-          id: '2U',
-          position: {
-            x: 212,
-            y: 238,
-          },
-        },
-        {
-          id: '2U_1',
-          position: {
-            x: 38,
-            y: 382,
-          },
-        },
-      ],
+      position: { x: 0, y: 0 },
+      size: '1.5U',
+      isPut: false,
+      keycap: none,
+    },
+    {
+      position: { x: 1, y: 0 },
+      size: '1U',
+      isPut: false,
+      keycap: none,
+    },
+    {
+      position: { x: 2, y: 0 },
+      size: '1U',
+      isPut: true,
+      keycap: some({ id: '1U', selected: false }),
     },
   ],
+  pcbName: 'pcbName',
 };
 
 describe('keyboardSlice', function () {
   describe('reducers', function () {
-    describe('#insertKeyCap', function () {
-      it('should insert to `state#putKeycaps` when state is empty', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
-          type: insertKeyCap.type,
+    describe('#initKeyBoard', function () {
+      it('should not initKeyBoard when state incorrect position', function () {
+        const payloadFixture: PayloadAction<InitKeyBoardPayload> = {
+          type: initKeyBoard.type,
           payload: {
-            size: '2.25U',
-            usedKey: {
-              id: '2.25U',
-              position: {
-                x: 0,
-                y: 0,
-              },
+            keyboard: {
+              keyframes: [
+                {
+                  position: { x: 0, y: 0 },
+                  size: '1.5U',
+                  isPut: false,
+                  keycap: none,
+                },
+                {
+                  position: { x: 1, y: 0 },
+                  size: '1U',
+                  isPut: false,
+                  keycap: none,
+                },
+                {
+                  position: { x: 2, y: 0 },
+                  size: '1U',
+                  isPut: true,
+                  keycap: some({ id: '1U', selected: false }),
+                },
+              ],
+              pcbName: 'pcbName',
             },
           },
         };
         const expected: KeyboardState = {
-          putKeycaps: [
+          keyframes: [
             {
-              size: '2.25U',
-              usedKeys: [
-                {
-                  id: '2.25U',
-                  position: {
-                    x: 0,
-                    y: 0,
-                  },
-                },
-              ],
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
             },
           ],
+          pcbName: 'pcbName',
         };
-
-        expect(
-          keyboardSlice.reducer({ putKeycaps: [] }, payloadFixture)
-        ).toEqual(expected);
+        expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
+          expected
+        );
       });
-
-      it('should insert to `state#putKeycaps` when `size` of payload is not equal `state#putKeycaps#size`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
-          type: insertKeyCap.type,
+    });
+    describe('#updateKeycap', function () {
+      it('should not update when state incorrect position', function () {
+        const payloadFixture: PayloadAction<UpdateKeycapPayload> = {
+          type: updateKeycap.type,
           payload: {
-            size: '2.25U',
-            usedKey: {
-              id: '2.25U',
-              position: {
-                x: 0,
-                y: 0,
-              },
-            },
+            position: { x: 0, y: 0 },
+            usedKey: { id: '1U', selected: true },
+            size: '1U',
           },
         };
         const expected: KeyboardState = {
-          putKeycaps: [
+          keyframes: [
             {
-              size: '2U',
-              usedKeys: [
-                {
-                  id: '2U',
-                  position: {
-                    x: 212,
-                    y: 238,
-                  },
-                },
-                {
-                  id: '2U_1',
-                  position: {
-                    x: 38,
-                    y: 382,
-                  },
-                },
-              ],
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
             },
             {
-              size: '2.25U',
-              usedKeys: [
-                {
-                  id: '2.25U',
-                  position: {
-                    x: 0,
-                    y: 0,
-                  },
-                },
-              ],
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
             },
           ],
+          pcbName: 'pcbName',
         };
-
         expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
           expected
         );
       });
 
-      it('should insert to `state#putKeycaps#usedKeys` with a new id when `size` of payload is equal `state#putKeycaps#size`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
-          type: insertKeyCap.type,
+      it('should not update when state incorrect size', function () {
+        const payloadFixture: PayloadAction<UpdateKeycapPayload> = {
+          type: updateKeycap.type,
           payload: {
+            position: { x: 1, y: 0 },
+            usedKey: { id: '2U', selected: true },
             size: '2U',
-            usedKey: {
-              id: '2U_2',
-              position: {
-                x: 0,
-                y: 0,
-              },
-            },
           },
         };
         const expected: KeyboardState = {
-          putKeycaps: [
+          keyframes: [
             {
-              size: '2U',
-              usedKeys: [
-                {
-                  id: '2U',
-                  position: {
-                    x: 212,
-                    y: 238,
-                  },
-                },
-                {
-                  id: '2U_1',
-                  position: {
-                    x: 38,
-                    y: 382,
-                  },
-                },
-                {
-                  id: '2U_2',
-                  position: {
-                    x: 0,
-                    y: 0,
-                  },
-                },
-              ],
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
             },
           ],
+          pcbName: 'pcbName',
         };
+        expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
+          expected
+        );
+      });
 
+      it('should update correctly', function () {
+        const payloadFixture: PayloadAction<UpdateKeycapPayload> = {
+          type: updateKeycap.type,
+          payload: {
+            position: { x: 1, y: 0 },
+            usedKey: { id: '1U', selected: true },
+            size: '1U',
+          },
+        };
+        const expected: KeyboardState = {
+          keyframes: [
+            {
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
+            },
+          ],
+          pcbName: 'pcbName',
+        };
         expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
           expected
         );
       });
     });
 
-    describe('#updateKeyCapPosition', function () {
-      it('should update `state#putKeycaps#usedKeys#position` when `usedKey#id` of payload is equal to `state#putKeycaps#usedKeys#id`', function () {
-        const payloadFixture: { type: string; payload: KeyboardPayload } = {
-          type: updateKeyCapPosition.type,
+    describe('#removeKeycap', function () {
+      it('should not remove when state incorrect position', function () {
+        const payloadFixture: PayloadAction<RemoveKeyboardPayload> = {
+          type: removeKeycap.type,
           payload: {
-            size: '2U',
-            usedKey: {
-              id: '2U_1',
-              position: {
-                x: 123,
-                y: 456,
-              },
-            },
+            position: { x: 3, y: 0 },
           },
         };
         const expected: KeyboardState = {
-          putKeycaps: [
+          keyframes: [
             {
-              size: '2U',
-              usedKeys: [
-                {
-                  id: '2U',
-                  position: {
-                    x: 212,
-                    y: 238,
-                  },
-                },
-                {
-                  id: '2U_1',
-                  position: {
-                    x: 123,
-                    y: 456,
-                  },
-                },
-              ],
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
             },
           ],
+          pcbName: 'pcbName',
         };
+        expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
+          expected
+        );
+      });
 
+      it('should not remove when isPut = false', function () {
+        const payloadFixture: PayloadAction<RemoveKeyboardPayload> = {
+          type: removeKeycap.type,
+          payload: {
+            position: { x: 1, y: 0 },
+          },
+        };
+        const expected: KeyboardState = {
+          keyframes: [
+            {
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: true,
+              keycap: some({ id: '1U', selected: false }),
+            },
+          ],
+          pcbName: 'pcbName',
+        };
+        expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
+          expected
+        );
+      });
+
+      it('should remove correctly', function () {
+        const payloadFixture: PayloadAction<RemoveKeyboardPayload> = {
+          type: removeKeycap.type,
+          payload: {
+            position: { x: 2, y: 0 },
+          },
+        };
+        const expected: KeyboardState = {
+          keyframes: [
+            {
+              position: { x: 0, y: 0 },
+              size: '1.5U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 1, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+            {
+              position: { x: 2, y: 0 },
+              size: '1U',
+              isPut: false,
+              keycap: none,
+            },
+          ],
+          pcbName: 'pcbName',
+        };
         expect(keyboardSlice.reducer(stateFixture, payloadFixture)).toEqual(
           expected
         );

@@ -1,114 +1,150 @@
-import React from 'react';
-import { useDrop } from 'react-dnd';
+import * as N from 'fp-ts/Eq/';
+import { fold, Option } from 'fp-ts/Option';
+import { pipe } from 'fp-ts/function';
+import * as A from 'fp-ts/lib/Array';
+import * as O from 'fp-ts/lib/Option';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { insertKeyCap, updateKeyCapPosition, RootState } from '../reducer';
-import { KeyboardPayload } from '../reducer/keyboard';
-import { KeycapSize } from '../types';
-import KeyCap from './keycap';
+import * as B from '../ext/boolean';
+import getPCB from '../pcb';
+import { initKeyBoard, setPCBId, setPCBSize } from '../reducer';
+import { PCBSize } from '../reducer/pcb';
+import {
+  KeycapSize,
+  KeyFrame as KeyFrameType,
+  RootState,
+  UsedKey,
+} from '../types';
+import KeyFrame from './atomic/keyframe';
+import ISOEnterKeycap from './isoEnterKeycap';
+import Keycap from './keycap';
 
-const wrappedDivStyle: React.CSSProperties = {
+const keyBoardDivStyle: React.CSSProperties = {
+  top: '50%',
+  left: '50%',
+  zIndex: 1000,
+  transform: 'translate(-50%,-50%)',
   position: 'absolute',
-  width: '100%',
-  top: 0,
-  zIndex: -1,
-};
-
-const keyboardStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  height: '100vh',
-  justifyContent: 'center',
+  border: '1px solid black',
 };
 
 const KeyBoard: React.FC = () => {
-  // const { draggingKeycapId } = useSelector((state: RootState) => state.keyCap);
-  const { putKeycaps } = useSelector((state: RootState) => state.keyboard);
+  const { keyframes } = useSelector((state: RootState) => state.keyboard);
+  const { size, id } = useSelector((state: RootState) => state.pcb);
   const dispatch = useDispatch();
-  const [, drop] = useDrop({
-    accept: 'keycap',
-    canDrop: () => true,
-    drop: (_, monitor) => {
-      const offset = monitor.getClientOffset();
-      const size = monitor.getItem().size;
-      if (offset != null) {
-        const usedSizeSet = putKeycaps.map((v) => v.size);
-        // キーボード画面上に同じ大きさのキーキャップがあればidにsuffixをつけて新しく生成。さもなければsuffixなしで生成。
-        if (usedSizeSet.includes(size)) {
-          const usedKeysMatchesSize = putKeycaps
-            .filter((v) => v.size === size)
-            .flatMap((v) => v.usedKeys);
-          // ドラッグしたキーキャップがタブからドラッグしていれば新しく生成。さもなければidをチェックして座標を更新するコンポーネントを選択
-          if (monitor.getItem().isDragedFromTab != null) {
-            dispatch(
-              insertKeyCap({
-                size,
-                usedKey: {
-                  id: size + '_' + usedKeysMatchesSize.length,
-                  position: {
-                    x: offset.x,
-                    y: offset.y,
-                  },
-                },
-              })
-            );
-          } else {
-            const keycap: KeyboardPayload = {
-              size: monitor.getItem().size,
-              usedKey: {
-                id: monitor.getItem()._key,
-                position: {
-                  x: offset.x,
-                  y: offset.y,
-                },
-              },
-            };
-            dispatch(updateKeyCapPosition(keycap));
-          }
-        } else {
-          dispatch(
-            insertKeyCap({
-              size,
-              usedKey: {
-                id: size,
-                position: {
-                  x: offset.x,
-                  y: offset.y,
-                },
-              },
-            })
-          );
-        }
-      }
-    },
-  });
 
-  return (
-    <div style={wrappedDivStyle}>
-      <div style={keyboardStyle} ref={drop}>
-        {putKeycaps.map((keycap) =>
-          keycap.usedKeys.map((key) =>
-            renderKeyCap(key.id, keycap.size, key.position.x, key.position.y)
-          )
+  useEffect(() => {
+    dispatch(setPCBId({ id: 'MacJis' }));
+  }, [dispatch]);
+
+  useEffect(() => {
+    (async (): Promise<void> => {
+      if (O.isSome(id)) {
+        const config = await getPCB(id.value);
+        dispatch(
+          setPCBSize({
+            size: {
+              pixelWidth: config.pixelWidth,
+              pixelHeight: config.pixelHeight,
+              rowTotalUnitSize: config.rowTotalUnitSize,
+            },
+          })
+        );
+        dispatch(
+          initKeyBoard({
+            keyboard: {
+              keyframes: config.keyframes,
+              pcbName: config.pcbName,
+            },
+          })
+        );
+      }
+    })();
+  }, [dispatch, id]);
+
+  const rowKeyframes = pipe(
+    A.bindTo('y')(
+      pipe(
+        keyframes.map((v) => v.position.y),
+        A.uniq(N.eqNumber)
+      )
+    ),
+    A.map((v) => (
+      <div key={`column_${v.y + 1}`} style={{ display: 'flex' }}>
+        {pipe(
+          keyframes.filter((keyframe) => keyframe.position.y == v.y),
+          A.map((v) => renderKeyframe(v, size))
         )}
       </div>
+    ))
+  );
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        position: 'relative',
+      }}>
+      <div style={{ ...keyBoardDivStyle }}>{rowKeyframes}</div>
     </div>
   );
 };
 
-function renderKeyCap(
-  capId: string,
+function renderKeyframe(
+  keyframe: KeyFrameType,
+  size: Option<PCBSize>
+): JSX.Element {
+  return B.fold(
+    keyframe.isPut,
+    renderKeycap(
+      keyframe.keycap,
+      keyframe.size,
+      keyframe.position.x,
+      keyframe.position.y
+    ),
+    pipe(
+      size,
+      O.fold(
+        () => <div />,
+        (pcbSize) => (
+          <KeyFrame
+            key={`${keyframe.position.x}_${keyframe.position.y}`}
+            keycapTotalSize={pcbSize.rowTotalUnitSize}
+            position={keyframe.position}
+            pcbViewWidth={pcbSize.pixelWidth}
+            pcbViewHeight={pcbSize.pixelHeight}
+            size={keyframe.size}
+          />
+        )
+      )
+    )
+  );
+}
+
+function renderKeycap(
+  maybeUsedKey: Option<UsedKey>,
   size: KeycapSize,
   x: number,
   y: number
 ): JSX.Element {
-  return (
-    <KeyCap
-      key={capId}
-      _key={capId}
-      size={size}
-      styles={{ position: 'fixed', top: y, left: x }}
-    />
+  return pipe(
+    maybeUsedKey,
+    fold(
+      () => <div />,
+      (usedKey) => {
+        if (usedKey.id == 'ISOEnter') {
+          return (
+            <ISOEnterKeycap _key={`${usedKey.id}_${x}_${y}`} size={size} />
+          );
+          //TODO 直したい =3
+        } else if (usedKey.id == 'ISOEnter_BOTTOM') {
+          return <div />;
+        } else {
+          return <Keycap _key={`${usedKey.id}_${x}_${y}`} size={size} />;
+        }
+      }
+    )
   );
 }
 

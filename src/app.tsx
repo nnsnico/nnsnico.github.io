@@ -8,7 +8,7 @@ import Navigation from './components/navigation';
 
 const App: React.FC = () => {
   return (
-    <div>
+    <div style={{ display: 'flex', flexFlow: 'column', height: '100vh' }}>
       <Navigation />
       <DndProvider backend={HTML5Backend}>
         <KeyBoard />
