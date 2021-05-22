@@ -52,6 +52,7 @@ function readCsvFile(pcbName: string): TE.TaskEither<string, string> {
               TE.chain((reader) => decode(reader))
             );
           } else {
+            console.error('PCB template is not found.');
             throw new Error('PCB template is not found.');
           }
         }),
