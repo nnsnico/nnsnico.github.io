@@ -10,7 +10,8 @@
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "check": "tsc"
+    "check": "tsc",
+    "deploy": "gh-pages -d public"
   },
   "dependencies": {
     "@chakra-ui/gatsby-plugin": "^2.0.2",
@@ -24,6 +25,7 @@
     "gatsby": "^4.4.0",
     "gatsby-plugin-manifest": "^4.4.0",
     "gatsby-plugin-react-redux": "^1.1.0",
+    "gh-pages": "^3.2.3",
     "react": "^17.0.1",
     "react-dnd": "^14.0.5",
     "react-dnd-html5-backend": "^14.1.0",
