@@ -1,21 +1,27 @@
 import { combineReducers, createStore } from '@reduxjs/toolkit';
-
-import keyboardSlice from './keyboard';
-import pcbSlice from './pcb';
+import { CombinedState, Store } from 'redux';
+import keyboardSlice, { KeyboardState } from './keyboard';
+import pcbSlice, { PCBState } from './pcb';
 
 // reducers
-const reducers = combineReducers({
+export const reducers = combineReducers({
   keyboard: keyboardSlice.reducer,
   pcb: pcbSlice.reducer,
 });
 
 // actions
-export const {
-  initKeyBoard,
-  removeKeycap,
-  updateKeycap,
-} = keyboardSlice.actions;
+export const { initKeyBoard, removeKeycap, updateKeycap } =
+  keyboardSlice.actions;
 export const { setPCBSize, setPCBId } = pcbSlice.actions;
 
-// store
-export const store = createStore(reducers);
+export default (
+  preloadedState: CombinedState<{
+    keyboard: KeyboardState;
+    pcb: PCBState;
+  }>
+): Store<
+  CombinedState<{
+    keyboard: KeyboardState;
+    pcb: PCBState;
+  }>
+> => createStore(reducers, preloadedState);

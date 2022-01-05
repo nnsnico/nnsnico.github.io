@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as O from 'fp-ts/Option';
 
 import * as B from '../ext/boolean';
-import { KeycapSize, KeyFrame, Position, UsedKey } from '../types';
+import { KeycapSize, KeyFrame, Position, UsedKey } from '../type';
 
 //
 // action payload
@@ -84,4 +84,5 @@ const keyboardSlice = createSlice({
       }),
   },
 });
+
 export default keyboardSlice;
