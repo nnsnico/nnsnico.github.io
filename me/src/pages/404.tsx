@@ -3,6 +3,7 @@ import NotFound from '../components/notFound';
 
 const NotFoundPage: React.FC = () => (
   <main>
+    <title>Not found</title>
     <NotFound />
   </main>
 );

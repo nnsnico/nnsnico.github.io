@@ -1,11 +1,10 @@
-import * as N from 'fp-ts/Eq/';
+import * as N from 'fp-ts/number/';
 import { fold, Option } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import * as B from '../../../ext/boolean';
 import getPCB from '../../../pcb';
 import { initKeyBoard, setPCBId, setPCBSize } from '../../../reducer';
@@ -67,7 +66,7 @@ const KeyBoard: React.FC = () => {
     A.bindTo('y')(
       pipe(
         keyframes.map((v) => v.position.y),
-        A.uniq(N.eqNumber)
+        A.uniq(N.Eq)
       )
     ),
     A.map((v) => (

@@ -24,7 +24,9 @@ const Section: React.FC<SectionProps> = ({ title, items, children }) => (
         ? children
         : items.map((item, i) => (
             <ListItem key={i}>
-              {item.icon != undefined ? <ListIcon as={item.icon} /> : null}
+              {item.icon != undefined ? (
+                <ListIcon verticalAlign="middle" as={item.icon} />
+              ) : null}
               <Text
                 as="span"
                 textColor="blue.300"

@@ -1,7 +1,6 @@
+import { createStore } from '@reduxjs/toolkit';
 import { Option } from 'fp-ts/es6/Option';
 import * as O from 'fp-ts/Option';
-import { DragObjectWithType } from 'react-dnd';
-import { createStore } from '@reduxjs/toolkit';
 import { reducers } from '../reducer';
 
 export type Url = `http${'s' | ''}://${string}`;
@@ -48,7 +47,7 @@ const store = createStore(reducers);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export type DragItem = DragObjectWithType & {
+export type DragItem = {
   _key: string;
   size: KeycapSize;
   isDragedFromTab: Option<boolean>;

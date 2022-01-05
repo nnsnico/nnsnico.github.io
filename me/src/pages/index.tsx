@@ -40,7 +40,7 @@ const IndexPage: React.FC = () => {
     <main
       style={{
         margin: '2rem',
-        fontFamily: '-apple-system, Roboto, sans-serif, serif',
+        fontFamily: 'Meiryo, Roboto, sans-serif, serif',
       }}>
       <title>nnsnico&apos;s home page</title>
       <Flex backgroundColor="whiteAlpha.200" direction="column" padding="16">

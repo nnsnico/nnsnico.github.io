@@ -11,6 +11,7 @@ import AirkeyLogo from './logo';
 const Airkey: React.FC<RouteComponentProps> = () => {
   return (
     <div style={{ display: 'flex', flexFlow: 'column', height: '100vh' }}>
+      <title>Airkey</title>
       <Header>
         <AirkeyLogo />
         <Button backgroundColor="#4FC3F7" color="white" size="sm">

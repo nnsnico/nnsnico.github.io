@@ -3,12 +3,11 @@ import * as O from 'fp-ts/lib/Option';
 import React from 'react';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
-
+import { DragItem, KeycapSize, RootState } from '../../../type';
 import {
   convertKeyCapSizeToColor,
   convertNumberFromUnit,
 } from '../../../util/keycapConverter';
-import { DragItem, KeycapSize, RootState } from '../../../type';
 
 export interface ISOEnterKeycapProps {
   _key: string;
@@ -24,8 +23,8 @@ const ISOEnterKeycap: React.FC<ISOEnterKeycapProps> = (
   const isDragedFromTab = fromNullable(props.isDraggedFromTab);
   const { size } = useSelector((state: RootState) => state.pcb);
   const [{ opacity }, dragRef] = useDrag({
+    type: 'keycap',
     item: {
-      type: 'keycap',
       _key,
       size: keycapSize,
       isDragedFromTab,

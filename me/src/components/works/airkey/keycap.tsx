@@ -24,8 +24,8 @@ const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
   const isDragedFromTab = fromNullable(props.isDragedFromTab);
   const { size } = useSelector((state: RootState) => state.pcb);
   const [{ opacity }, dragRef] = useDrag({
+    type: 'keycap',
     item: {
-      type: 'keycap',
       _key,
       size: keycapSize,
       isDragedFromTab,
