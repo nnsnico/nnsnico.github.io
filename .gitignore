@@ -1,8 +1,3 @@
-# elm-package generated files
-elm-stuff
-# elm-repl generated files
-repl-temp-*
-
 # Mac
 .DS_Store
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -11,12 +6,14 @@ repl-temp-*
 /node_modules
 /.pnp
 .pnp.js
+.cache/
 
 # testing
 /coverage
 
 # production
 /build
+/public
 
 # misc
 .env.local

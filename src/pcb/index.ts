@@ -1,5 +1,5 @@
-import { KeyFrame } from '../types';
-import getPcb from './util/pcbParser';
+import { KeyFrame } from '../type';
+import getPcb from '../util/pcbParser';
 
 export const PCBName = {
   MacJis: 'Apple Magic Keyboard (JIS)',
