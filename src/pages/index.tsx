@@ -6,7 +6,7 @@ import Title from '../components/index/title';
 
 const blogSectionItems: SectionItem[] = [
   {
-    link: '/notfound',
+    link: '/blog',
     title: 'To be Added',
     description: '気が向いたら実装する',
   },

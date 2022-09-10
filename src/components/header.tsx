@@ -1,7 +1,11 @@
 import { Flex } from '@chakra-ui/react';
 import React from 'react';
 
-const Header: React.FC = ({ children }) => {
+export interface HeaderProps {
+  children?: React.ReactNode
+}
+
+const Header: React.FC<HeaderProps> = ({ children }) => {
   return (
     <Flex
       as="nav"

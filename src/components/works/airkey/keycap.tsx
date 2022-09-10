@@ -16,6 +16,7 @@ export interface KeycapProps {
   styles?: React.CSSProperties;
   isDragedFromTab?: boolean;
   onClick?: () => void;
+  children?: React.ReactNode
 }
 
 const Keycap: React.FC<KeycapProps> = (props: KeycapProps) => {
