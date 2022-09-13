@@ -39,7 +39,6 @@ const IndexPage: React.FC = () => {
   return (
     <main
       style={{
-        // margin: '2rem',
         fontFamily: 'Meiryo, Roboto, sans-serif, serif',
       }}>
       <title>nnsnico&apos;s website</title>
