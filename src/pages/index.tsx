@@ -1,4 +1,4 @@
-import { Flex, HStack, Spacer, Text } from '@chakra-ui/react';
+import { HStack, Spacer, Text } from '@chakra-ui/react';
 import React from 'react';
 import { BsGithub, BsTwitter } from 'react-icons/bs';
 import Section, { SectionItem } from '../components/parts/section';
