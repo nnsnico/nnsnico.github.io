@@ -2,6 +2,8 @@ module.exports = {
   siteMetadata: {
     siteUrl: 'https://github.nnsnico.io/',
     title: 'nnsnico',
+    description: "nnsnico's website" ,
+    image: './src/images/favicon.png',
   },
   plugins: [
     {
