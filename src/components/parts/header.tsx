@@ -10,11 +10,10 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
     <Flex
       as="nav"
       align="center"
-      justify="space-between"
       wrap="wrap"
       padding="1.0rem"
       bg="white"
-      boxShadow="xl"
+      boxShadow="md"
       style={{ zIndex: 1000 }}>
       {children}
     </Flex>

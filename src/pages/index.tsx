@@ -1,8 +1,10 @@
-import { Flex, Spacer } from '@chakra-ui/react';
+import { Flex, HStack, Spacer, Text } from '@chakra-ui/react';
 import React from 'react';
 import { BsGithub, BsTwitter } from 'react-icons/bs';
-import Section, { SectionItem } from '../components/index/section';
-import Title from '../components/index/title';
+import Section, { SectionItem } from '../components/parts/section';
+import Title from '../components/atoms/title'
+import Container from '../components/layouts/container';
+import Header from '../components/parts/header';
 
 const blogSectionItems: SectionItem[] = [
   {
@@ -25,13 +27,11 @@ const LinkSectionItems: SectionItem[] = [
     icon: BsGithub,
     link: 'https://github.com/nnsnico',
     title: 'GitHub',
-    description: '',
   },
   {
     icon: BsTwitter,
     link: 'https://twitter.com/_tymf',
     title: 'Twitter',
-    description: '',
   },
 ];
 
@@ -39,18 +39,23 @@ const IndexPage: React.FC = () => {
   return (
     <main
       style={{
-        margin: '2rem',
+        // margin: '2rem',
         fontFamily: 'Meiryo, Roboto, sans-serif, serif',
       }}>
-      <title>nnsnico&apos;s home page</title>
-      <Flex backgroundColor="whiteAlpha.200" direction="column" padding="16">
-        <Title />
+      <title>nnsnico&apos;s website</title>
+      <Header>
+        <HStack>
+          <Text textColor="gray.700" >(´ワ｀ )</Text>
+          <Title>nnsnico&apos;s website</Title>
+        </HStack>
+      </Header>
+      <Container>
         <Section title="ブログ" items={blogSectionItems} />
         <Spacer marginBottom="8" />
         <Section title="つくったもの" items={workingSectionItems} />
         <Spacer marginBottom="8" />
         <Section title="About me" items={LinkSectionItems} />
-      </Flex>
+      </Container>
     </main>
   );
 };

@@ -1,13 +1,14 @@
-import { Heading, List, ListIcon, ListItem, Text } from '@chakra-ui/react';
+import { List, ListIcon, ListItem, Text } from '@chakra-ui/react';
 import { Link } from 'gatsby';
 import React from 'react';
 import { IconType } from 'react-icons';
+import SubTitle from '../atoms/subTitle';
 
 export interface SectionItem {
   icon?: IconType;
   link: string;
   title: string;
-  description: string;
+  description?: string;
 }
 
 interface SectionProps {
@@ -18,17 +19,17 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ title, items, children }) => (
   <div>
-    <Heading size="md" textColor="gray.700" marginBottom="2">
-      {title}
-    </Heading>
+    <SubTitle>{title}</SubTitle>
     <List>
       {children != null
         ? children
         : items.map((item, i) => (
           <ListItem key={i}>
-            {item.icon != undefined ? (
-              <ListIcon verticalAlign="middle" as={item.icon} />
-            ) : null}
+            {
+              item.icon != undefined
+                ? <ListIcon verticalAlign="middle" as={item.icon} />
+                : null
+            }
             <Text
               as="span"
               textColor="blue.300"

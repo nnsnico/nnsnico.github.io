@@ -3,7 +3,7 @@ import { RouteComponentProps } from '@reach/router';
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Header from '../../header';
+import Header from '../../parts/header';
 import Footer from './footer';
 import KeyBoard from './keyboard';
 import AirkeyLogo from './logo';
